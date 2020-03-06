@@ -25,7 +25,7 @@ namespace WinFormsApp.Classes.Helpers
 
                 if (panel.Parent is Panel parent)
                 {
-                    return SetColor(parent, color);
+                    return SetColor(parent, color);  
                 }
 
                 return false;

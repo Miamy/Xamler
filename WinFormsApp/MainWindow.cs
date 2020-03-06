@@ -11,7 +11,9 @@ using System.Windows.Forms;
 using System.Xml;
 using WinFormsApp.Classes.Helpers;
 using WinFormsApp.Controls;
+using WinFormsApp.Windows;
 using XamlerModel;
+using XamlerModel.Interfaces;
 
 namespace WinFormsApp
 {
@@ -20,6 +22,7 @@ namespace WinFormsApp
         private List<Panel> _toolWindows;
         private List<XamlDocumentEditor> _editors;
 
+        public IAppSettings AppSettings { get; set; }
         public List<XamlData> Models { get; set; }
 
         private XamlData _currentModel;
@@ -28,6 +31,9 @@ namespace WinFormsApp
             get => _currentModel;
             set
             {
+                if (_currentModel == value)
+                    return;
+
                 _currentModel = value;
                 foreach (var editor in _editors)
                 {
@@ -113,6 +119,40 @@ namespace WinFormsApp
 
             Models = new List<XamlData>();
             _editors = new List<XamlDocumentEditor>();
+
+            FillToolbox();
+        }
+
+        public void Save()
+        {
+            foreach (var editor in _editors)
+            {
+                editor.Save();
+            }
+        }
+
+        private void FillToolbox()
+        {
+            /*var assembly = Assembly.LoadFrom(textBox2.Text);
+            listBox1.Items.Clear();
+            listBox1.DataSource = assembly.GetLoadableTypes().ToList();
+
+      //private void listBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            listBox2.Items.Clear();
+
+            var list = (ListBox)sender;
+            var selected = (Type)list.SelectedItem;
+            if (selected == null)
+                return;
+
+            var properties = selected.GetProperties();
+            foreach(var property in properties)
+            {
+                listBox2.Items.Add(property);
+            }
+        }*/
+
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -120,15 +160,7 @@ namespace WinFormsApp
             Close();
         }
 
-        private void MainWindow_ResizeEnd(object sender, EventArgs e)
-        {
 
-        }
-
-        private void splitter_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-
-        }
 
         private void toolWindowClick(object sender, EventArgs e)
         {
@@ -165,9 +197,12 @@ namespace WinFormsApp
 
         private void AddDocument(XamlData xaml)
         {
-            var tab = new TabPage(xaml.FileName);
+            var tab = new TabPage(xaml.FileName)
+            {
+                Tag = xaml
+            };
 
-            var editor = new XamlDocumentEditor(xaml)
+            var editor = new XamlDocumentEditor(xaml, AppSettings)
             {
                 Parent = tab,
                 Dock = DockStyle.Fill
@@ -176,6 +211,21 @@ namespace WinFormsApp
 
             documentsTabControl.TabPages.Add(tab);
             //documentsTabControl.SelectedTab = tab;
+        }
+
+        private void aboutXamlerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new AboutBox();
+            dialog.ShowDialog();
+        }
+
+        private void documentsTabControl_Selected(object sender, TabControlEventArgs e)
+        {
+            var selectedTab = ((TabControl)sender).SelectedTab;
+            if (selectedTab == null)
+                return;
+            CurrentModel = (XamlData)selectedTab.Tag;
+
         }
     }
 }

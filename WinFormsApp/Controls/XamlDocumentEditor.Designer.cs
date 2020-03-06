@@ -29,19 +29,25 @@
         private void InitializeComponent()
         {
             this.mainSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.codeTopPanel = new System.Windows.Forms.Panel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.numbers = new System.Windows.Forms.TextBox();
             this.codeStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.previewBox = new System.Windows.Forms.PictureBox();
-            this.previewStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.codeTopPanel = new System.Windows.Forms.Panel();
             this.toolsPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
-            this.codeEditor = new System.Windows.Forms.TextBox();
+            this.previewStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.previewBox = new System.Windows.Forms.PictureBox();
+            this.codeEditor = new WinFormsApp.Controls.SyncTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitContainer)).BeginInit();
             this.mainSplitContainer.Panel1.SuspendLayout();
             this.mainSplitContainer.Panel2.SuspendLayout();
             this.mainSplitContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.previewBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.toolsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.previewBox)).BeginInit();
             this.SuspendLayout();
             // 
             // mainSplitContainer
@@ -52,7 +58,7 @@
             // 
             // mainSplitContainer.Panel1
             // 
-            this.mainSplitContainer.Panel1.Controls.Add(this.codeEditor);
+            this.mainSplitContainer.Panel1.Controls.Add(this.splitContainer1);
             this.mainSplitContainer.Panel1.Controls.Add(this.codeStatusStrip);
             this.mainSplitContainer.Panel1.Controls.Add(this.codeTopPanel);
             // 
@@ -66,13 +72,34 @@
             this.mainSplitContainer.SplitterWidth = 14;
             this.mainSplitContainer.TabIndex = 0;
             // 
-            // codeTopPanel
+            // splitContainer1
             // 
-            this.codeTopPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.codeTopPanel.Location = new System.Drawing.Point(0, 0);
-            this.codeTopPanel.Name = "codeTopPanel";
-            this.codeTopPanel.Size = new System.Drawing.Size(371, 26);
-            this.codeTopPanel.TabIndex = 0;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.IsSplitterFixed = true;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 26);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.numbers);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.codeEditor);
+            this.splitContainer1.Size = new System.Drawing.Size(371, 404);
+            this.splitContainer1.SplitterDistance = 25;
+            this.splitContainer1.TabIndex = 2;
+            // 
+            // numbers
+            // 
+            this.numbers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.numbers.Location = new System.Drawing.Point(0, 0);
+            this.numbers.Multiline = true;
+            this.numbers.Name = "numbers";
+            this.numbers.ReadOnly = true;
+            this.numbers.Size = new System.Drawing.Size(25, 404);
+            this.numbers.TabIndex = 6;
+            this.numbers.WordWrap = false;
             // 
             // codeStatusStrip
             // 
@@ -82,22 +109,13 @@
             this.codeStatusStrip.TabIndex = 1;
             this.codeStatusStrip.Text = "statusStrip1";
             // 
-            // previewBox
+            // codeTopPanel
             // 
-            this.previewBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.previewBox.Location = new System.Drawing.Point(0, 0);
-            this.previewBox.Name = "previewBox";
-            this.previewBox.Size = new System.Drawing.Size(333, 452);
-            this.previewBox.TabIndex = 0;
-            this.previewBox.TabStop = false;
-            // 
-            // previewStatusStrip
-            // 
-            this.previewStatusStrip.Location = new System.Drawing.Point(0, 430);
-            this.previewStatusStrip.Name = "previewStatusStrip";
-            this.previewStatusStrip.Size = new System.Drawing.Size(333, 22);
-            this.previewStatusStrip.TabIndex = 2;
-            this.previewStatusStrip.Text = "statusStrip1";
+            this.codeTopPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.codeTopPanel.Location = new System.Drawing.Point(0, 0);
+            this.codeTopPanel.Name = "codeTopPanel";
+            this.codeTopPanel.Size = new System.Drawing.Size(371, 26);
+            this.codeTopPanel.TabIndex = 0;
             // 
             // toolsPanel
             // 
@@ -117,15 +135,34 @@
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             // 
+            // previewStatusStrip
+            // 
+            this.previewStatusStrip.Location = new System.Drawing.Point(0, 430);
+            this.previewStatusStrip.Name = "previewStatusStrip";
+            this.previewStatusStrip.Size = new System.Drawing.Size(333, 22);
+            this.previewStatusStrip.TabIndex = 2;
+            this.previewStatusStrip.Text = "statusStrip1";
+            // 
+            // previewBox
+            // 
+            this.previewBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.previewBox.Location = new System.Drawing.Point(0, 0);
+            this.previewBox.Name = "previewBox";
+            this.previewBox.Size = new System.Drawing.Size(333, 452);
+            this.previewBox.TabIndex = 0;
+            this.previewBox.TabStop = false;
+            // 
             // codeEditor
             // 
+            this.codeEditor.Buddy = null;
             this.codeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.codeEditor.Location = new System.Drawing.Point(0, 26);
+            this.codeEditor.Location = new System.Drawing.Point(0, 0);
             this.codeEditor.Multiline = true;
             this.codeEditor.Name = "codeEditor";
             this.codeEditor.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.codeEditor.Size = new System.Drawing.Size(371, 404);
-            this.codeEditor.TabIndex = 2;
+            this.codeEditor.Size = new System.Drawing.Size(342, 404);
+            this.codeEditor.TabIndex = 4;
+            this.codeEditor.WordWrap = false;
             // 
             // XamlDocumentEditor
             // 
@@ -140,8 +177,14 @@
             this.mainSplitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitContainer)).EndInit();
             this.mainSplitContainer.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.previewBox)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.toolsPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.previewBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -155,6 +198,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.StatusStrip previewStatusStrip;
         private System.Windows.Forms.PictureBox previewBox;
-        private System.Windows.Forms.TextBox codeEditor;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.TextBox numbers;
+        private SyncTextBox codeEditor;
     }
 }

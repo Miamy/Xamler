@@ -30,6 +30,8 @@
         {
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -39,27 +41,27 @@
             this.mainContainer = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.leftContainer = new System.Windows.Forms.SplitContainer();
+            this.toolboxPanel = new System.Windows.Forms.Panel();
             this.toolboxPanelCaption = new System.Windows.Forms.Panel();
             this.toolboxPanelLabel = new System.Windows.Forms.Label();
+            this.objectsPanel = new System.Windows.Forms.Panel();
+            this.objectsTreeView = new System.Windows.Forms.TreeView();
             this.objectsPanelCaption = new System.Windows.Forms.Panel();
             this.objectsPanelLabel = new System.Windows.Forms.Label();
-            this.rightContainer = new System.Windows.Forms.SplitContainer();
-            this.explorerPanelCaption = new System.Windows.Forms.Panel();
-            this.explorerPanelLabel = new System.Windows.Forms.Label();
-            this.propertiesPanelCaption = new System.Windows.Forms.Panel();
-            this.propertiesPanelLabel = new System.Windows.Forms.Label();
             this.centerContainer = new System.Windows.Forms.SplitContainer();
+            this.documentsTabControl = new System.Windows.Forms.TabControl();
             this.systemTabControl = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.documentsTabControl = new System.Windows.Forms.TabControl();
+            this.rightContainer = new System.Windows.Forms.SplitContainer();
             this.explorerPanel = new System.Windows.Forms.Panel();
+            this.explorerPanelCaption = new System.Windows.Forms.Panel();
+            this.explorerPanelLabel = new System.Windows.Forms.Label();
             this.propertiesPanel = new System.Windows.Forms.Panel();
-            this.objectsPanel = new System.Windows.Forms.Panel();
-            this.toolboxPanel = new System.Windows.Forms.Panel();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.propertiesPanelCaption = new System.Windows.Forms.Panel();
+            this.propertiesPanelLabel = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.objectsTreeView = new System.Windows.Forms.TreeView();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutXamlerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
             this.mainContainer.Panel1.SuspendLayout();
@@ -74,25 +76,26 @@
             this.leftContainer.Panel2.SuspendLayout();
             this.leftContainer.SuspendLayout();
             this.toolboxPanelCaption.SuspendLayout();
+            this.objectsPanel.SuspendLayout();
             this.objectsPanelCaption.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.centerContainer)).BeginInit();
+            this.centerContainer.Panel1.SuspendLayout();
+            this.centerContainer.Panel2.SuspendLayout();
+            this.centerContainer.SuspendLayout();
+            this.systemTabControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rightContainer)).BeginInit();
             this.rightContainer.Panel1.SuspendLayout();
             this.rightContainer.Panel2.SuspendLayout();
             this.rightContainer.SuspendLayout();
             this.explorerPanelCaption.SuspendLayout();
             this.propertiesPanelCaption.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.centerContainer)).BeginInit();
-            this.centerContainer.Panel1.SuspendLayout();
-            this.centerContainer.Panel2.SuspendLayout();
-            this.centerContainer.SuspendLayout();
-            this.systemTabControl.SuspendLayout();
-            this.objectsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(800, 24);
@@ -108,6 +111,19 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -212,6 +228,14 @@
             this.leftContainer.SplitterDistance = 161;
             this.leftContainer.TabIndex = 4;
             // 
+            // toolboxPanel
+            // 
+            this.toolboxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolboxPanel.Location = new System.Drawing.Point(0, 23);
+            this.toolboxPanel.Name = "toolboxPanel";
+            this.toolboxPanel.Size = new System.Drawing.Size(187, 138);
+            this.toolboxPanel.TabIndex = 3;
+            // 
             // toolboxPanelCaption
             // 
             this.toolboxPanelCaption.BackColor = System.Drawing.SystemColors.InactiveCaption;
@@ -234,6 +258,25 @@
             this.toolboxPanelLabel.TabIndex = 1;
             this.toolboxPanelLabel.Text = "Toolbox";
             // 
+            // objectsPanel
+            // 
+            this.objectsPanel.Controls.Add(this.objectsTreeView);
+            this.objectsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectsPanel.Location = new System.Drawing.Point(0, 23);
+            this.objectsPanel.Name = "objectsPanel";
+            this.objectsPanel.Size = new System.Drawing.Size(187, 216);
+            this.objectsPanel.TabIndex = 3;
+            // 
+            // objectsTreeView
+            // 
+            this.objectsTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectsTreeView.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.objectsTreeView.Location = new System.Drawing.Point(0, 0);
+            this.objectsTreeView.Name = "objectsTreeView";
+            this.objectsTreeView.Size = new System.Drawing.Size(187, 216);
+            this.objectsTreeView.TabIndex = 2;
+            this.objectsTreeView.Click += new System.EventHandler(this.toolWindowClick);
+            // 
             // objectsPanelCaption
             // 
             this.objectsPanelCaption.BackColor = System.Drawing.SystemColors.InactiveCaption;
@@ -255,6 +298,57 @@
             this.objectsPanelLabel.Size = new System.Drawing.Size(85, 15);
             this.objectsPanelLabel.TabIndex = 1;
             this.objectsPanelLabel.Text = "Objects";
+            // 
+            // centerContainer
+            // 
+            this.centerContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.centerContainer.Location = new System.Drawing.Point(0, 0);
+            this.centerContainer.Name = "centerContainer";
+            this.centerContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // centerContainer.Panel1
+            // 
+            this.centerContainer.Panel1.Controls.Add(this.documentsTabControl);
+            // 
+            // centerContainer.Panel2
+            // 
+            this.centerContainer.Panel2.Controls.Add(this.systemTabControl);
+            this.centerContainer.Size = new System.Drawing.Size(374, 404);
+            this.centerContainer.SplitterDistance = 324;
+            this.centerContainer.TabIndex = 0;
+            // 
+            // documentsTabControl
+            // 
+            this.documentsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.documentsTabControl.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.documentsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.documentsTabControl.Name = "documentsTabControl";
+            this.documentsTabControl.SelectedIndex = 0;
+            this.documentsTabControl.Size = new System.Drawing.Size(374, 324);
+            this.documentsTabControl.TabIndex = 0;
+            this.documentsTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.documentsTabControl_Selected);
+            // 
+            // systemTabControl
+            // 
+            this.systemTabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.systemTabControl.Controls.Add(this.tabPage2);
+            this.systemTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.systemTabControl.HotTrack = true;
+            this.systemTabControl.Location = new System.Drawing.Point(0, 0);
+            this.systemTabControl.Name = "systemTabControl";
+            this.systemTabControl.SelectedIndex = 0;
+            this.systemTabControl.Size = new System.Drawing.Size(374, 76);
+            this.systemTabControl.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 4);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(366, 50);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Error List";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // rightContainer
             // 
@@ -279,6 +373,15 @@
             this.rightContainer.SplitterDistance = 261;
             this.rightContainer.TabIndex = 9;
             // 
+            // explorerPanel
+            // 
+            this.explorerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.explorerPanel.Location = new System.Drawing.Point(0, 23);
+            this.explorerPanel.Name = "explorerPanel";
+            this.explorerPanel.Size = new System.Drawing.Size(231, 238);
+            this.explorerPanel.TabIndex = 2;
+            this.explorerPanel.Click += new System.EventHandler(this.toolWindowClick);
+            // 
             // explorerPanelCaption
             // 
             this.explorerPanelCaption.BackColor = System.Drawing.SystemColors.InactiveCaption;
@@ -300,6 +403,15 @@
             this.explorerPanelLabel.Size = new System.Drawing.Size(85, 15);
             this.explorerPanelLabel.TabIndex = 0;
             this.explorerPanelLabel.Text = "Solution explorer";
+            // 
+            // propertiesPanel
+            // 
+            this.propertiesPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertiesPanel.Location = new System.Drawing.Point(0, 23);
+            this.propertiesPanel.Name = "propertiesPanel";
+            this.propertiesPanel.Size = new System.Drawing.Size(231, 116);
+            this.propertiesPanel.TabIndex = 3;
+            this.propertiesPanel.Click += new System.EventHandler(this.toolWindowClick);
             // 
             // propertiesPanelCaption
             // 
@@ -323,117 +435,24 @@
             this.propertiesPanelLabel.TabIndex = 1;
             this.propertiesPanelLabel.Text = "Properties";
             // 
-            // centerContainer
-            // 
-            this.centerContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.centerContainer.Location = new System.Drawing.Point(0, 0);
-            this.centerContainer.Name = "centerContainer";
-            this.centerContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // centerContainer.Panel1
-            // 
-            this.centerContainer.Panel1.Controls.Add(this.documentsTabControl);
-            // 
-            // centerContainer.Panel2
-            // 
-            this.centerContainer.Panel2.Controls.Add(this.systemTabControl);
-            this.centerContainer.Size = new System.Drawing.Size(374, 404);
-            this.centerContainer.SplitterDistance = 324;
-            this.centerContainer.TabIndex = 0;
-            // 
-            // systemTabControl
-            // 
-            this.systemTabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this.systemTabControl.Controls.Add(this.tabPage2);
-            this.systemTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.systemTabControl.HotTrack = true;
-            this.systemTabControl.Location = new System.Drawing.Point(0, 0);
-            this.systemTabControl.Name = "systemTabControl";
-            this.systemTabControl.SelectedIndex = 0;
-            this.systemTabControl.Size = new System.Drawing.Size(374, 76);
-            this.systemTabControl.TabIndex = 0;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(366, 50);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Error List";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // documentsTabControl
-            // 
-            this.documentsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.documentsTabControl.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.documentsTabControl.Location = new System.Drawing.Point(0, 0);
-            this.documentsTabControl.Name = "documentsTabControl";
-            this.documentsTabControl.SelectedIndex = 0;
-            this.documentsTabControl.Size = new System.Drawing.Size(374, 324);
-            this.documentsTabControl.TabIndex = 0;
-            // 
-            // explorerPanel
-            // 
-            this.explorerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.explorerPanel.Location = new System.Drawing.Point(0, 23);
-            this.explorerPanel.Name = "explorerPanel";
-            this.explorerPanel.Size = new System.Drawing.Size(231, 238);
-            this.explorerPanel.TabIndex = 2;
-            this.explorerPanel.Click += new System.EventHandler(this.toolWindowClick);
-            // 
-            // propertiesPanel
-            // 
-            this.propertiesPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertiesPanel.Location = new System.Drawing.Point(0, 23);
-            this.propertiesPanel.Name = "propertiesPanel";
-            this.propertiesPanel.Size = new System.Drawing.Size(231, 116);
-            this.propertiesPanel.TabIndex = 3;
-            this.propertiesPanel.Click += new System.EventHandler(this.toolWindowClick);
-            // 
-            // objectsPanel
-            // 
-            this.objectsPanel.Controls.Add(this.objectsTreeView);
-            this.objectsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectsPanel.Location = new System.Drawing.Point(0, 23);
-            this.objectsPanel.Name = "objectsPanel";
-            this.objectsPanel.Size = new System.Drawing.Size(187, 216);
-            this.objectsPanel.TabIndex = 3;
-            // 
-            // toolboxPanel
-            // 
-            this.toolboxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolboxPanel.Location = new System.Drawing.Point(0, 23);
-            this.toolboxPanel.Name = "toolboxPanel";
-            this.toolboxPanel.Size = new System.Drawing.Size(187, 138);
-            this.toolboxPanel.TabIndex = 3;
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
-            // 
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog1";
             // 
-            // objectsTreeView
+            // helpToolStripMenuItem
             // 
-            this.objectsTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectsTreeView.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.objectsTreeView.Location = new System.Drawing.Point(0, 0);
-            this.objectsTreeView.Name = "objectsTreeView";
-            this.objectsTreeView.Size = new System.Drawing.Size(187, 216);
-            this.objectsTreeView.TabIndex = 2;
-            this.objectsTreeView.Click += new System.EventHandler(this.toolWindowClick);
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutXamlerToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutXamlerToolStripMenuItem
+            // 
+            this.aboutXamlerToolStripMenuItem.Name = "aboutXamlerToolStripMenuItem";
+            this.aboutXamlerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutXamlerToolStripMenuItem.Text = "About Xamler";
+            this.aboutXamlerToolStripMenuItem.Click += new System.EventHandler(this.aboutXamlerToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -447,7 +466,6 @@
             this.Name = "MainWindow";
             this.Text = "Xamler";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.ResizeEnd += new System.EventHandler(this.MainWindow_ResizeEnd);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.mainContainer.Panel1.ResumeLayout(false);
@@ -463,19 +481,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.leftContainer)).EndInit();
             this.leftContainer.ResumeLayout(false);
             this.toolboxPanelCaption.ResumeLayout(false);
+            this.objectsPanel.ResumeLayout(false);
             this.objectsPanelCaption.ResumeLayout(false);
+            this.centerContainer.Panel1.ResumeLayout(false);
+            this.centerContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.centerContainer)).EndInit();
+            this.centerContainer.ResumeLayout(false);
+            this.systemTabControl.ResumeLayout(false);
             this.rightContainer.Panel1.ResumeLayout(false);
             this.rightContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.rightContainer)).EndInit();
             this.rightContainer.ResumeLayout(false);
             this.explorerPanelCaption.ResumeLayout(false);
             this.propertiesPanelCaption.ResumeLayout(false);
-            this.centerContainer.Panel1.ResumeLayout(false);
-            this.centerContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.centerContainer)).EndInit();
-            this.centerContainer.ResumeLayout(false);
-            this.systemTabControl.ResumeLayout(false);
-            this.objectsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -515,6 +533,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.TreeView objectsTreeView;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutXamlerToolStripMenuItem;
     }
 }
 

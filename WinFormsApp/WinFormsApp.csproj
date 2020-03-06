@@ -54,7 +54,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\AppSettings.cs" />
+    <Compile Include="Classes\Helpers\AssemblyExtentions.cs" />
     <Compile Include="Classes\Helpers\WindowHelperClass.cs" />
+    <Compile Include="Controls\SyncTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SyncTextBox.Designer.cs">
+      <DependentUpon>SyncTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\XamlDocumentEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -69,6 +77,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Controls\SyncTextBox.resx">
+      <DependentUpon>SyncTextBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\XamlDocumentEditor.resx">
       <DependentUpon>XamlDocumentEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -84,6 +101,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Windows\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,9 +117,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Windows\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\XamlerModel\XamlerModel.csproj">
       <Project>{C6B6158A-3A35-47AB-B71A-62284641C042}</Project>
