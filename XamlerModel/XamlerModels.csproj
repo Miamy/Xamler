@@ -39,6 +39,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -50,8 +52,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\AppSettings.cs" />
+    <Compile Include="Classes\Helpers\XmlExtentions.cs" />
+    <Compile Include="Classes\PropertiesViewModel.cs" />
+    <Compile Include="Classes\Helpers\AssemblyExtentions.cs" />
+    <Compile Include="Classes\PropertyViewModel.cs" />
+    <Compile Include="Classes\ToolboxModel.cs" />
     <Compile Include="Classes\XamlData.cs" />
+    <Compile Include="Classes\XamlDocumentChangedEventArgs.cs" />
+    <Compile Include="Classes\XamlDocuments.cs" />
+    <Compile Include="Classes\XamlDocument.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Interfaces\IAppSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

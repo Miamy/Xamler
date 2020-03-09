@@ -1,0 +1,278 @@
+﻿<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:osc="clr-namespace:WpfApp.Controls.DockPanelSplitter"
+        xmlns:tp="clr-namespace:WpfApp.Controls.ToolPanel"
+        xmlns:commands="clr-namespace:WpfApp.Commands"
+        xmlns:local="clr-namespace:WpfApp"
+        xmlns:vm="clr-namespace:XamlerModel.Classes;assembly=XamlerModel"
+        mc:Ignorable="d"
+        Title="Xamler" Height="450" Width="800" WindowState="Maximized">
+
+    <Window.Resources>
+
+        <HierarchicalDataTemplate 
+            x:Key="NodeTemplate"
+            ItemsSource="{Binding XPath=./*}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="nodeName" Margin="0,0,5,0"/>
+                <TextBlock x:Name="nodeAttributes" Margin="5,0,0,0"/>
+            </StackPanel>
+
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=NodeType}"
+                    Value="Element">
+                    <Setter TargetName="nodeName" Property="Text"
+                        Value="{Binding Path=Name}" />
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding Path=NodeType}"
+                    Value="Element">
+                    <Setter TargetName="nodeAttributes" Property="Text"
+                        Value="{Binding Converter={StaticResource MethodToValueConverter},
+    ConverterParameter='AttributesList'}" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
+
+
+
+
+        <DataTemplate x:Key="CustomHeaderTemplate">
+            <DockPanel LastChildFill="True">
+                <Button Content="X" DockPanel.Dock="Right"
+                            Command="{Binding DataContext.CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
+                            CommandParameter="{Binding ID}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Label FontSize="10" Content="X" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Label Content="{Binding ID}" />
+            </DockPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <Menu 
+            Grid.Row="0"
+            >
+
+            <MenuItem
+                Header="File">
+                <MenuItem
+                    Command="commands:CommonCommands.OpenFile"
+                    />
+                
+                <Separator/>
+
+
+                <MenuItem
+                    Command="commands:CommonCommands.ExitApplication"
+                    />
+
+            </MenuItem>
+        </Menu>
+
+        <DockPanel 
+            Grid.Row="1"
+            LastChildFill="True"
+            >
+
+            <Grid 
+                x:Name="LeftContainer"
+                Width="300"
+                DockPanel.Dock="Left" 
+                Background="#FFF09191"
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <tp:ToolPanel
+                    x:Name="ToolboxToolbox"
+                    Grid.Row="0"
+                    Caption="Toolbox"
+                    >
+                    <tp:ToolPanel.PlaceHolder>
+                        <ListBox 
+                            x:Uid="ToolBoxListBoxUid"
+                            VerticalAlignment="Stretch" 
+                            >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </tp:ToolPanel.PlaceHolder>
+
+                </tp:ToolPanel>
+
+                <GridSplitter 
+                    Grid.Row="1"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Stretch"
+                    ShowsPreview="True"
+                    Height="5"
+                    />
+
+                <tp:ToolPanel
+                    x:Name="ObjectsToolbox"
+                    Grid.Row="2"
+                    Caption="Objects" 
+                    >
+
+                    <tp:ToolPanel.PlaceHolder>
+
+                        <TreeView  
+                            x:Uid="ObjectsTreeView"
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Stretch" 
+                            ItemTemplate="{StaticResource NodeTemplate}"
+                            VirtualizingStackPanel.IsVirtualizing="False"
+                            VirtualizingStackPanel.VirtualizationMode="Standard" SelectedItemChanged="TreeView_SelectedItemChanged" 
+
+                            >
+
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem">
+                                    <Setter 
+                                        Property="TreeViewItem.IsExpanded" 
+                                        Value="True"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+
+                        </TreeView>
+
+                    </tp:ToolPanel.PlaceHolder>
+                </tp:ToolPanel>
+
+            </Grid>
+            <osc:DockPanelSplitter DockPanel.Dock="Left" Width="4" />
+
+            <Grid 
+                x:Name="RightContainer"
+                Width="200"
+                DockPanel.Dock="Right" 
+                Background="#22F04491"
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <tp:ToolPanel
+                    x:Name="SolutionToolbox"
+                    Grid.Row="0"
+                    Caption="Solution"
+                    Height="200" 
+                    VerticalAlignment="Top"
+                    >
+                </tp:ToolPanel>
+
+                <GridSplitter 
+                    Grid.Row="1"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Stretch"
+                    ShowsPreview="True"
+                    Height="5"
+                    />
+
+                <tp:ToolPanel
+                    x:Name="PropertiesToolbox"
+                    Grid.Row="2"
+                    Caption="Properties" 
+                    >
+                    <tp:ToolPanel.PlaceHolder>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel
+                                Grid.Row="0"
+                                Orientation="Horizontal"
+                                Height="20"
+                                >
+                            </StackPanel>
+                            
+                            <TabControl 
+                                Grid.Row="1"
+                                VerticalContentAlignment="Stretch"
+                                VerticalAlignment="Stretch" 
+                                TabStripPlacement="Bottom"
+                                BorderThickness="0" 
+                                SelectionChanged="TabControl_SelectionChanged"
+                            
+                                >
+                        
+                                <TabItem
+                                    x:Uid="AllPropertiesPage"
+                                    Header="All"
+                                    >
+
+                                    <TreeView 
+                                        x:Uid="PropertiesTree"
+                                        HorizontalAlignment="Left" 
+                                        Height="100" 
+                                        VerticalAlignment="Top" 
+                                        Width="100"/>
+
+                                </TabItem>
+
+                                <TabItem
+                                    x:Uid="AssignedPropertiesPage"
+                                    Header="Assigned"
+                                    >
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </tp:ToolPanel.PlaceHolder>
+                </tp:ToolPanel>
+                
+
+            </Grid>            
+            <osc:DockPanelSplitter DockPanel.Dock="Right" Width="4"/>
+
+            <StackPanel 
+                x:Name="BottomContainer"
+                Orientation="Vertical" 
+                Height="100"
+                DockPanel.Dock="Bottom"
+                Background="#FFF55191"
+                />
+            <osc:DockPanelSplitter DockPanel.Dock="Bottom" Height="4"/>
+
+            <StackPanel 
+                Orientation="Vertical"
+                >
+                <TabControl
+                    x:Name="EditorsContainer"
+                    VerticalContentAlignment="Stretch"
+                    ItemTemplate="{StaticResource CustomHeaderTemplate}"
+                    />
+            </StackPanel>
+
+        </DockPanel>
+
+        <StatusBar 
+            Grid.Row="2"
+            />
+
+    </Grid>
+</Window>

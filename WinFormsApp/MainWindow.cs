@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,20 +14,23 @@ using WinFormsApp.Classes.Helpers;
 using WinFormsApp.Controls;
 using WinFormsApp.Windows;
 using XamlerModel;
+using XamlerModel.Classes;
 using XamlerModel.Interfaces;
 
 namespace WinFormsApp
 {
     public partial class MainWindow : Form
     {
+        internal enum PropertiesKind { All, Assigned }
+
         private List<Panel> _toolWindows;
         private List<XamlDocumentEditor> _editors;
 
-        public IAppSettings AppSettings { get; set; }
-        public List<XamlData> Models { get; set; }
+        public IAppSettings AppSettings { get; set; } = new AppSettings();
+        public List<XamlDocument> Models { get; set; }
 
-        private XamlData _currentModel;
-        public XamlData CurrentModel
+        private XamlDocument _currentModel;
+        public XamlDocument CurrentModel
         {
             get => _currentModel;
             set
@@ -34,7 +38,14 @@ namespace WinFormsApp
                 if (_currentModel == value)
                     return;
 
+                if (_currentModel != null)
+                    _currentModel.PropertyChanged -= CurrentModelPropertyChanged;
+
                 _currentModel = value;
+
+                if (_currentModel != null)
+                    _currentModel.PropertyChanged += CurrentModelPropertyChanged;
+
                 foreach (var editor in _editors)
                 {
                     if (editor.Xaml == value)
@@ -48,20 +59,41 @@ namespace WinFormsApp
             }
         }
 
+        ToolboxModel ToolboxModel { get; set; }
+
+
+        private void CurrentModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CurrentNode":
+                    FillPropertiesTable();
+                    break;
+            }
+        }
+
         private void LoadTreeFromXmlDocument()
         {
             try
             {
-                objectsTreeView.Nodes.Clear();
-
-                foreach (XmlNode node in CurrentModel.Dom.DocumentElement.ChildNodes)
+                objectsTreeView.BeginUpdate();
+                try
                 {
-                    if (node.Name == "namespace" && node.ChildNodes.Count == 0 && string.IsNullOrEmpty(GetAttributeText(node, "name")))
-                        continue;
-                    AddNode(objectsTreeView.Nodes, node);
-                }
+                    objectsTreeView.Nodes.Clear();
 
-                objectsTreeView.ExpandAll();
+                    foreach (XmlNode node in CurrentModel.Dom.DocumentElement.ChildNodes)
+                    {
+                        if (node.Name == "namespace" && node.ChildNodes.Count == 0 && string.IsNullOrEmpty(GetAttributeText(node, "name")))
+                            continue;
+                        AddNode(objectsTreeView.Nodes, node);
+                    }
+
+                    objectsTreeView.ExpandAll();
+                }
+                finally
+                {
+                    objectsTreeView.EndUpdate();
+                }
             }
             catch (Exception ex)
             {
@@ -91,6 +123,7 @@ namespace WinFormsApp
             }
 
             TreeNode newNode = nodes.Add(text);
+            newNode.Tag = inXmlNode;
 
             if (inXmlNode.HasChildNodes)
             {
@@ -111,34 +144,54 @@ namespace WinFormsApp
 
             _toolWindows = new List<Panel>
             {
-                leftContainer.Panel1,
-                leftContainer.Panel2,
+                leftInnerContainer.Panel1,
+                leftInnerContainer.Panel2,
                 rightContainer.Panel1,
                 rightContainer.Panel2
             };
 
-            Models = new List<XamlData>();
+            Models = new List<XamlDocument>();
             _editors = new List<XamlDocumentEditor>();
 
-            FillToolbox();
+            ToolboxModel = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
+            toolBoxListBox.DataSource = ToolboxModel.Types;
+
+            tabPagePropertiesAll.Tag = PropertiesKind.All;
+            tabPagePropertiesAssigned.Tag = PropertiesKind.Assigned;
+
+
+        }
+
+        private void LoadSettings()
+        {
+            AppSettings.Load(this);
+
+            AppSettings.Load(mainContainer);
+            AppSettings.Load(leftContainer);
+            AppSettings.Load(centerContainer);
+            AppSettings.Load(rightContainer);
+            AppSettings.Load(leftInnerContainer);
         }
 
         public void Save()
         {
+            AppSettings.Save(this);
+
+            AppSettings.Save(mainContainer);
+            AppSettings.Save(leftContainer);
+            AppSettings.Save(leftInnerContainer);
+            AppSettings.Save(centerContainer);
+            AppSettings.Save(rightContainer);
+
             foreach (var editor in _editors)
             {
                 editor.Save();
             }
         }
 
-        private void FillToolbox()
-        {
-            /*var assembly = Assembly.LoadFrom(textBox2.Text);
-            listBox1.Items.Clear();
-            listBox1.DataSource = assembly.GetLoadableTypes().ToList();
 
-      //private void listBox1_SelectedValueChanged(object sender, EventArgs e)
-        {
+        //private void toolBoxListBox_SelectedValueChanged(object sender, EventArgs e)
+        /*{
             listBox2.Items.Clear();
 
             var list = (ListBox)sender;
@@ -153,7 +206,7 @@ namespace WinFormsApp
             }
         }*/
 
-        }
+
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -169,10 +222,11 @@ namespace WinFormsApp
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog.InitialDirectory = @"e:\CSharp\";
+            openFileDialog.InitialDirectory = @"D:\Projects\Csharp\_Workspace\loadpad\loadpad\ConfigPages";
+            //@"e:\CSharp\";
             openFileDialog.DefaultExt = "xaml";
             openFileDialog.Filter = "xaml files (*.xaml)|*.xaml|All files (*.*)|*.*";
-            openFileDialog.FileName = "MainPageSecondTry.xaml";
+            openFileDialog.FileName = "NewSettingsPage.xaml";
 
             if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                 return;
@@ -188,18 +242,19 @@ namespace WinFormsApp
                 return;
             }
 
-            var xaml = new XamlData(filename);
+            var xaml = new XamlDocument(filename);
             Models.Add(xaml);
             AddDocument(xaml);
 
             CurrentModel = xaml;
         }
 
-        private void AddDocument(XamlData xaml)
+        private void AddDocument(XamlDocument xaml)
         {
-            var tab = new TabPage(xaml.FileName)
+            var tab = new TabPage(Path.GetFileName(xaml.FileName))
             {
-                Tag = xaml
+                Tag = xaml,
+                ToolTipText = xaml.FileName
             };
 
             var editor = new XamlDocumentEditor(xaml, AppSettings)
@@ -224,8 +279,152 @@ namespace WinFormsApp
             var selectedTab = ((TabControl)sender).SelectedTab;
             if (selectedTab == null)
                 return;
-            CurrentModel = (XamlData)selectedTab.Tag;
+            CurrentModel = (XamlDocument)selectedTab.Tag;
 
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Save();
+        }
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+            LoadSettings();
+        }
+
+        private void tabControlProperties_Selected(object sender, TabControlEventArgs e)
+        {
+            tableLayoutProperties.Parent = tabControlProperties.SelectedTab;
+            FillPropertiesTable();
+        }
+
+        private void FillPropertiesTable()
+        {
+            tableLayoutProperties.Controls.Clear();
+            if (tableLayoutProperties.Parent == null)
+                return;
+
+            tableLayoutProperties.SuspendLayout();
+            try
+            {
+                tableLayoutProperties.RowCount = 1;
+                tableLayoutProperties.RowStyles.Clear();
+                tableLayoutProperties.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+
+                var node = CurrentModel.CurrentNode;
+                if (node == null)
+                    return;
+
+                var properties = new Dictionary<string, string>();
+
+                var kind = (PropertiesKind)tableLayoutProperties.Parent?.Tag;
+                switch (kind)
+                {
+                    case PropertiesKind.All:
+                        var typeName = "Xamarin.Forms." + node.Name;
+                        var type = ToolboxModel.GetType(typeName);
+                        if (type == null)
+                            return;
+                        //Where(p => p.Name.IndexOf("Property") > -1).
+                        //var bindable = type.GetFields().Where(p => Attribute.IsDefined(p, typeof(BindableAttribute))).OrderBy(p => p.Name).ToList();
+                        var bindable = type.GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).OrderBy(p => p.Name).ToList();
+                        if (bindable != null)
+                        {
+                            var instance = Activator.CreateInstance(type);
+
+                            foreach (var attribute in bindable)
+                            {
+                                if (!properties.ContainsKey(attribute.Name))
+                                    properties.Add(attribute.Name, GetDefaultValue(attribute, instance).ToString());
+                            }
+                        }
+
+                        break;
+                    case PropertiesKind.Assigned:
+                        if (node.Attributes != null)
+                        {
+                            foreach (XmlAttribute attribute in node.Attributes)
+                            {
+                                properties.Add(attribute.Name, attribute.Value);
+                            }
+                        }
+
+                        break;
+                }
+
+                Label label;
+                TextBox textBox;
+                tableLayoutProperties.RowCount = properties.Count;
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    label = new Label
+                    {
+                        Text = properties.Keys.ElementAt(i),
+                        TextAlign = ContentAlignment.MiddleLeft
+                    };
+                    tableLayoutProperties.Controls.Add(label, 0, i);
+
+                    textBox = new TextBox
+                    {
+                        Text = properties.Values.ElementAt(i),
+                        BorderStyle = BorderStyle.None,
+                        Width = tableLayoutProperties.ClientSize.Width / 2,
+                        TextAlign = HorizontalAlignment.Left
+                    };
+                    tableLayoutProperties.Controls.Add(textBox, 1, i);
+                }
+                tableLayoutProperties.Height = 20 * tableLayoutProperties.RowCount;
+            }
+            finally
+            {
+                tableLayoutProperties.ResumeLayout();
+            }
+        }
+
+        private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var view = (TreeView)sender;
+            if (e.Node == null)
+            {
+                CurrentModel.CurrentNode = null;
+            }
+            else
+            {
+                CurrentModel.CurrentNode = (XmlNode)e.Node.Tag;
+            }
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var options = new OptionsForm();
+            options.ShowDialog();
+        }
+
+
+        public static object GetDefaultValue(PropertyInfo property, object instance)
+        {
+            var value = property.GetValue(instance);
+            if (value == null)
+                return "";
+            if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string))
+                return value.ToString();
+            return GeneratePropertiesDictionary(value);
+        }
+
+        public static string GeneratePropertiesDictionary(object myClass)
+        //public static List<PropertyInfo> GeneratePropertiesDictionary(object myClass)
+        {
+            var val = myClass.GetType()
+                          .GetProperties()
+                          .Where(p => p.CanRead)
+                          //.ToDictionary(p => p.Name, p => p.GetValue(myClass, null));
+                          .ToList();
+            var res = "";
+            foreach (var pair in val)
+                //res += pair.Value.ToString() + ";";
+                res += pair.ToString() + ";";
+            return res;
         }
     }
 }

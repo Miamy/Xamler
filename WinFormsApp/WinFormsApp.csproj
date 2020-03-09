@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\AppSettings.cs" />
-    <Compile Include="Classes\Helpers\AssemblyExtentions.cs" />
+    <Compile Include="Classes\Helpers\ControlExtentions.cs" />
     <Compile Include="Classes\Helpers\WindowHelperClass.cs" />
     <Compile Include="Controls\SyncTextBox.cs">
       <SubType>Component</SubType>
@@ -83,6 +84,24 @@
     <Compile Include="Windows\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\OptionsChildren\ColorsOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Windows\OptionsChildren\ColorsOptions.Designer.cs">
+      <DependentUpon>ColorsOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\OptionsChildren\XamarinOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Windows\OptionsChildren\XamarinOptions.Designer.cs">
+      <DependentUpon>XamarinOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\OptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\OptionsForm.Designer.cs">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Controls\SyncTextBox.resx">
       <DependentUpon>SyncTextBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -104,6 +123,15 @@
     <EmbeddedResource Include="Windows\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\OptionsChildren\ColorsOptions.resx">
+      <DependentUpon>ColorsOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\OptionsChildren\XamarinOptions.resx">
+      <DependentUpon>XamarinOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\OptionsForm.resx">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,9 +147,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\XamlerModel\XamlerModel.csproj">
+    <ProjectReference Include="..\XamlerModel\XamlerModels.csproj">
       <Project>{C6B6158A-3A35-47AB-B71A-62284641C042}</Project>
-      <Name>XamlerModel</Name>
+      <Name>XamlerModels</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

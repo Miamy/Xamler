@@ -12,31 +12,46 @@ namespace WinFormsApp.Classes.Helpers
     {
         internal static void SetActivePanel(List<Panel> panelsList, Control active)
         {
-            bool SetColor(Control panel, Color color)
+            bool SetColor(Control panel, bool isActive)
             {
-                foreach (Control child in panel.Controls)
+                Color backColor, foreColor;
+                if (isActive)
                 {
-                    if (child.Name.IndexOf("PanelCaption") > -1)
+                    backColor = SystemColors.ActiveCaption;
+                    foreColor = SystemColors.ActiveCaptionText;
+                }
+                else
+                {
+                    backColor = SystemColors.InactiveCaption;
+                    foreColor = SystemColors.InactiveCaptionText;
+                }
+
+                var child = panel.FindControlByPartOfName("PanelCaption");
+                if (child != null)
+                {
+                    child.BackColor = backColor;
+                    var label = child.FindControlByPartOfName("PanelLabel");
+                    if (label != null)
                     {
-                        child.BackColor = color;
-                        return true;
+                        label.ForeColor = foreColor;
                     }
+                    return true;
                 }
 
                 if (panel.Parent is Panel parent)
                 {
-                    return SetColor(parent, color);  
+                    return SetColor(parent, isActive);
                 }
 
                 return false;
             }
 
-            foreach (var window in panelsList)            
+            foreach (var window in panelsList)
             {
-                SetColor(window, SystemColors.InactiveCaption);
+                SetColor(window, false);
             }
 
-            SetColor(active, SystemColors.ActiveCaption);
+            SetColor(active, true);
 
         }
     }

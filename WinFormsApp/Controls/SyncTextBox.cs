@@ -15,17 +15,19 @@ namespace WinFormsApp.Controls
     {
         public SyncTextBox()
         {
-            this.Multiline = true;
-            this.ScrollBars = ScrollBars.Vertical;
+            Multiline = true;
+            ScrollBars = ScrollBars.Vertical;
         }
         public Control Buddy { get; set; }
+
+        private const int WM_VSCROLL = 0x115;
+        private const int WM_MOUSEWHEEL = 0x020A;
 
         private static bool scrolling;   // In case buddy tries to scroll us
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
-            // Trap WM_VSCROLL message and pass to buddy
-            if (m.Msg == 0x115 && !scrolling && Buddy != null && Buddy.IsHandleCreated)
+            if ((m.Msg == WM_VSCROLL || m.Msg == WM_MOUSEWHEEL) && !scrolling && Buddy != null && Buddy.IsHandleCreated)
             {
                 scrolling = true;
                 SendMessage(Buddy.Handle, m.Msg, m.WParam, m.LParam);

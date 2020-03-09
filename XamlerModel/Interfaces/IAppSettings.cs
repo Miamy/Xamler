@@ -10,6 +10,9 @@ namespace XamlerModel.Interfaces
     public interface IAppSettings
     {
         void Load(SplitContainer container);
+        void Load(Form form);
+
         void Save(SplitContainer container);
+        void Save(Form form);
     }
 }

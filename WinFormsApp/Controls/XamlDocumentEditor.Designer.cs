@@ -32,6 +32,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.numbers = new System.Windows.Forms.TextBox();
             this.codeStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.positionLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.codeTopPanel = new System.Windows.Forms.Panel();
             this.toolsPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
@@ -46,6 +47,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.codeStatusStrip.SuspendLayout();
             this.toolsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewBox)).BeginInit();
             this.SuspendLayout();
@@ -74,6 +76,7 @@
             // 
             // splitContainer1
             // 
+            this.splitContainer1.BackColor = System.Drawing.SystemColors.Window;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 26);
@@ -92,7 +95,10 @@
             // 
             // numbers
             // 
+            this.numbers.BackColor = System.Drawing.SystemColors.Window;
+            this.numbers.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.numbers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.numbers.Enabled = false;
             this.numbers.Location = new System.Drawing.Point(0, 0);
             this.numbers.Multiline = true;
             this.numbers.Name = "numbers";
@@ -103,11 +109,19 @@
             // 
             // codeStatusStrip
             // 
+            this.codeStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.positionLabel});
             this.codeStatusStrip.Location = new System.Drawing.Point(0, 430);
             this.codeStatusStrip.Name = "codeStatusStrip";
             this.codeStatusStrip.Size = new System.Drawing.Size(371, 22);
             this.codeStatusStrip.TabIndex = 1;
             this.codeStatusStrip.Text = "statusStrip1";
+            // 
+            // positionLabel
+            // 
+            this.positionLabel.Name = "positionLabel";
+            this.positionLabel.Size = new System.Drawing.Size(10, 17);
+            this.positionLabel.Text = " ";
             // 
             // codeTopPanel
             // 
@@ -154,6 +168,9 @@
             // 
             // codeEditor
             // 
+            this.codeEditor.AcceptsReturn = true;
+            this.codeEditor.AcceptsTab = true;
+            this.codeEditor.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.codeEditor.Buddy = null;
             this.codeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.codeEditor.Location = new System.Drawing.Point(0, 0);
@@ -163,6 +180,10 @@
             this.codeEditor.Size = new System.Drawing.Size(342, 404);
             this.codeEditor.TabIndex = 4;
             this.codeEditor.WordWrap = false;
+            this.codeEditor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.codeEditor_MouseClick);
+            this.codeEditor.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.codeEditor_KeyPress);
+            this.codeEditor.KeyUp += new System.Windows.Forms.KeyEventHandler(this.codeEditor_KeyUp);
+            this.codeEditor.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.codeEditor_PreviewKeyDown);
             // 
             // XamlDocumentEditor
             // 
@@ -183,6 +204,8 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.codeStatusStrip.ResumeLayout(false);
+            this.codeStatusStrip.PerformLayout();
             this.toolsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.previewBox)).EndInit();
             this.ResumeLayout(false);
@@ -201,5 +224,6 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TextBox numbers;
         private SyncTextBox codeEditor;
+        private System.Windows.Forms.ToolStripStatusLabel positionLabel;
     }
 }

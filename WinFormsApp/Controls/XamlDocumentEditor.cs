@@ -11,15 +11,16 @@ using XamlerModel;
 using XamlerModel.Interfaces;
 using System.IO;
 using System.Runtime.InteropServices;
+using XamlerModel.Classes;
 
 namespace WinFormsApp.Controls
 {
     public partial class XamlDocumentEditor : UserControl
     {
         private IAppSettings _settings;
-        public XamlData Xaml { get; set; }
+        public XamlDocument Xaml { get; set; }
 
-        public XamlDocumentEditor(XamlData xaml, IAppSettings settings)
+        public XamlDocumentEditor(XamlDocument xaml, IAppSettings settings)
         {
             InitializeComponent();
             _settings = settings;
@@ -30,7 +31,7 @@ namespace WinFormsApp.Controls
             codeEditor.Buddy = numbers;
         }
 
-        private async void LoadFromFile(XamlData xaml)
+        private async void LoadFromFile(XamlDocument xaml)
         {
             if (!File.Exists(xaml.FileName))
                 throw new FileNotFoundException();
@@ -52,9 +53,44 @@ namespace WinFormsApp.Controls
         {
             _settings.Save(mainSplitContainer);
         }
+
+        private void codeEditor_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            
+        }
+
+        private void UpdateInterface()
+        {
+            var caret_pos = codeEditor.GetCaretPosition();
+            positionLabel.Text = $"Ln: {caret_pos.Y} Ch: {caret_pos.X}";
+        }
+
+        private void codeEditor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            
+        }
+
+        private void codeEditor_MouseClick(object sender, MouseEventArgs e)
+        {
+            UpdateInterface();
+        }
+
+        private void codeEditor_KeyUp(object sender, KeyEventArgs e)
+        {
+            UpdateInterface();
+        }
     }
 
 
+    public static class TextBoxExtentions
+    {
+        public static Point GetCaretPosition(this TextBox textBox)
+        {
+            int s = textBox.SelectionStart;
+            int y = textBox.GetLineFromCharIndex(s);
+            int x = s - textBox.GetFirstCharIndexFromLine(y);
 
-
+            return new System.Drawing.Point(x + 1, y + 1);
+        }
+    }
 }

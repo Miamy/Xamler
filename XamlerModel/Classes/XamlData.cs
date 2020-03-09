@@ -1,47 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 
-namespace XamlerModel
+namespace XamlerModel.Classes
 {
-    public class XamlData
+    public class XamlData : INotifyPropertyChanged
     {
-        public string FileName { get; set; }
-        public XmlDocument Dom { get; set; }
-
-        public XamlData(string filename)
+        private XmlNode _node;
+        public XmlNode Node
         {
-            FileName = filename;
-            LoadFromFile();
-            CreateAndLoadDom();
-        }
-
-        private void CreateAndLoadDom()
-        {
-            try
+            get => _node;
+            set
             {
-                Dom = new XmlDocument();
-                Dom.Load(FileName);
-            }
-            catch (XmlException xmlEx)
-            {
-                MessageBox.Show(xmlEx.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                _node = value;
+                OnPropertyChanged();
             }
         }
 
-        private void LoadFromFile()
+        public string Name => _node?.Name;
+
+   
+
+
+        public XamlData(XmlNode node)
         {
-            if (!File.Exists(FileName))
-                throw new FileNotFoundException();
+            _node = node;
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

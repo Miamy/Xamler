@@ -8,7 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp", "WinFormsApp\
 		{C6B6158A-3A35-47AB-B71A-62284641C042} = {C6B6158A-3A35-47AB-B71A-62284641C042}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamlerModel", "XamlerModel\XamlerModel.csproj", "{C6B6158A-3A35-47AB-B71A-62284641C042}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamlerModels", "XamlerModel\XamlerModels.csproj", "{C6B6158A-3A35-47AB-B71A-62284641C042}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csproj", "{5D5F33C1-FDA4-4F93-BF82-A0625A883B57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,10 @@ Global
 		{C6B6158A-3A35-47AB-B71A-62284641C042}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6B6158A-3A35-47AB-B71A-62284641C042}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6B6158A-3A35-47AB-B71A-62284641C042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D5F33C1-FDA4-4F93-BF82-A0625A883B57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D5F33C1-FDA4-4F93-BF82-A0625A883B57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D5F33C1-FDA4-4F93-BF82-A0625A883B57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D5F33C1-FDA4-4F93-BF82-A0625A883B57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
