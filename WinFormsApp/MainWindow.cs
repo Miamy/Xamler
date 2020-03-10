@@ -15,13 +15,14 @@ using WinFormsApp.Controls;
 using WinFormsApp.Windows;
 using XamlerModel;
 using XamlerModel.Classes;
+using XamlerModel.Classes.PropertiesModel;
 using XamlerModel.Interfaces;
 
 namespace WinFormsApp
 {
     public partial class MainWindow : Form
     {
-        internal enum PropertiesKind { All, Assigned }
+        
 
         private List<Panel> _toolWindows;
         private List<XamlDocumentEditor> _editors;
@@ -59,7 +60,7 @@ namespace WinFormsApp
             }
         }
 
-        ToolboxModel ToolboxModel { get; set; }
+        ToolboxModel Toolbox { get; set; }
 
 
         private void CurrentModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -153,11 +154,11 @@ namespace WinFormsApp
             Models = new List<XamlDocument>();
             _editors = new List<XamlDocumentEditor>();
 
-            ToolboxModel = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
-            toolBoxListBox.DataSource = ToolboxModel.Types;
+            Toolbox = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
+            toolBoxListBox.DataSource = Toolbox.Types;
 
-            tabPagePropertiesAll.Tag = PropertiesKind.All;
-            tabPagePropertiesAssigned.Tag = PropertiesKind.Assigned;
+            tabPagePropertiesAll.Tag = PropertyViewModel.PropertiesKind.All;
+            tabPagePropertiesAssigned.Tag = PropertyViewModel.PropertiesKind.Assigned;
 
 
         }
@@ -318,12 +319,12 @@ namespace WinFormsApp
 
                 var properties = new Dictionary<string, string>();
 
-                var kind = (PropertiesKind)tableLayoutProperties.Parent?.Tag;
+                var kind = (PropertyViewModel.PropertiesKind)tableLayoutProperties.Parent?.Tag;
                 switch (kind)
                 {
-                    case PropertiesKind.All:
+                    case PropertyViewModel.PropertiesKind.All:
                         var typeName = "Xamarin.Forms." + node.Name;
-                        var type = ToolboxModel.GetType(typeName);
+                        var type = Toolbox.GetType(typeName);
                         if (type == null)
                             return;
                         //Where(p => p.Name.IndexOf("Property") > -1).
@@ -341,7 +342,7 @@ namespace WinFormsApp
                         }
 
                         break;
-                    case PropertiesKind.Assigned:
+                    case PropertyViewModel.PropertiesKind.Assigned:
                         if (node.Attributes != null)
                         {
                             foreach (XmlAttribute attribute in node.Attributes)

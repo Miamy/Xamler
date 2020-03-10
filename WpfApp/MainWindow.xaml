@@ -7,7 +7,7 @@
         xmlns:tp="clr-namespace:WpfApp.Controls.ToolPanel"
         xmlns:commands="clr-namespace:WpfApp.Commands"
         xmlns:local="clr-namespace:WpfApp"
-        xmlns:vm="clr-namespace:XamlerModel.Classes;assembly=XamlerModel"
+        xmlns:vm="clr-namespace:XamlerModel.Classes.PropertiesModel;assembly=XamlerModel"
         mc:Ignorable="d"
         Title="Xamler" Height="450" Width="800" WindowState="Maximized">
 
@@ -23,16 +23,16 @@
 
             <HierarchicalDataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Path=NodeType}"
-                    Value="Element">
+                             Value="Element">
                     <Setter TargetName="nodeName" Property="Text"
-                        Value="{Binding Path=Name}" />
+                            Value="{Binding Path=Name}" />
                 </DataTrigger>
 
                 <DataTrigger Binding="{Binding Path=NodeType}"
-                    Value="Element">
+                             Value="Element">
                     <Setter TargetName="nodeAttributes" Property="Text"
-                        Value="{Binding Converter={StaticResource MethodToValueConverter},
-    ConverterParameter='AttributesList'}" />
+                            Value="{Binding Converter={StaticResource MethodToValueConverter},
+                            ConverterParameter='AttributesList'}" />
                 </DataTrigger>
             </HierarchicalDataTemplate.Triggers>
         </HierarchicalDataTemplate>
@@ -43,8 +43,8 @@
         <DataTemplate x:Key="CustomHeaderTemplate">
             <DockPanel LastChildFill="True">
                 <Button Content="X" DockPanel.Dock="Right"
-                            Command="{Binding DataContext.CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
-                            CommandParameter="{Binding ID}">
+                        Command="{Binding DataContext.CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
+                        CommandParameter="{Binding ID}">
                     <Button.Template>
                         <ControlTemplate>
                             <Label FontSize="10" Content="X" />
@@ -54,6 +54,80 @@
                 <Label Content="{Binding ID}" />
             </DockPanel>
         </DataTemplate>
+
+        <HierarchicalDataTemplate
+            DataType    = "{x:Type vm:PropertiesViewModel}"
+            ItemsSource="{Binding Properties}">
+
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" SharedSizeGroup="A"/>
+                    <ColumnDefinition Width="4" SharedSizeGroup="B"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="C" />
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding Name}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    />
+                <GridSplitter 
+                    Grid.Column="1" 
+                    ShowsPreview="True"
+                    Width="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    />
+                <TextBox
+                    Grid.Column="2"
+                    Text="{Binding Value, Mode=OneWay}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                    BorderThickness="0"
+                    />
+            </Grid>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate 
+            DataType    = "{x:Type vm:PropertyViewModel}"
+            ItemsSource="{Binding Children}">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" SharedSizeGroup="A"/>
+                    <ColumnDefinition Width="4" SharedSizeGroup="B"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="C" />
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding Name}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    />
+                <GridSplitter 
+                    Grid.Column="1" 
+                    ShowsPreview="True"
+                    Width="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    />
+                <TextBox 
+                       Grid.Column="2"
+                    Text="{Binding Value, Mode=OneWay}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                    BorderThickness="0"
+                    />
+            </Grid>
+
+        </HierarchicalDataTemplate>
+
     </Window.Resources>
 
 
@@ -144,7 +218,8 @@
                             VerticalAlignment="Stretch" 
                             ItemTemplate="{StaticResource NodeTemplate}"
                             VirtualizingStackPanel.IsVirtualizing="False"
-                            VirtualizingStackPanel.VirtualizationMode="Standard" SelectedItemChanged="TreeView_SelectedItemChanged" 
+                            VirtualizingStackPanel.VirtualizationMode="Standard" 
+                            SelectedItemChanged="ObjectsView_SelectedItemChanged" 
 
                             >
 
@@ -166,7 +241,7 @@
 
             <Grid 
                 x:Name="RightContainer"
-                Width="200"
+                Width="300"
                 DockPanel.Dock="Right" 
                 Background="#22F04491"
                 >
@@ -212,13 +287,13 @@
                             </StackPanel>
                             
                             <TabControl 
+                                Grid.IsSharedSizeScope="True"
                                 Grid.Row="1"
                                 VerticalContentAlignment="Stretch"
                                 VerticalAlignment="Stretch" 
                                 TabStripPlacement="Bottom"
                                 BorderThickness="0" 
-                                SelectionChanged="TabControl_SelectionChanged"
-                            
+                                SelectionChanged="PropertiesTabControl_SelectionChanged"                            
                                 >
                         
                                 <TabItem
@@ -228,10 +303,9 @@
 
                                     <TreeView 
                                         x:Uid="PropertiesTree"
-                                        HorizontalAlignment="Left" 
-                                        Height="100" 
-                                        VerticalAlignment="Top" 
-                                        Width="100"/>
+                                        HorizontalAlignment="Stretch" 
+                                        VerticalAlignment="Stretch" 
+                                        />
 
                                 </TabItem>
 
@@ -249,24 +323,46 @@
             </Grid>            
             <osc:DockPanelSplitter DockPanel.Dock="Right" Width="4"/>
 
-            <StackPanel 
+            <Grid
                 x:Name="BottomContainer"
-                Orientation="Vertical" 
                 Height="100"
                 DockPanel.Dock="Bottom"
-                Background="#FFF55191"
-                />
+                >
+
+                <TabControl 
+                    VerticalContentAlignment="Stretch"
+                    VerticalAlignment="Stretch" 
+                    TabStripPlacement="Bottom"
+                    BorderThickness="0" 
+                    >
+
+                    <TabItem
+                        x:Uid="ErrorLogTab"
+                        Header="Error List"
+                        >
+
+                    </TabItem>
+
+                    <TabItem
+                        x:Uid="OutputLogTab"
+                        Header="Output"
+                        >
+                    </TabItem>
+                </TabControl>
+
+
+            </Grid>
             <osc:DockPanelSplitter DockPanel.Dock="Bottom" Height="4"/>
 
-            <StackPanel 
-                Orientation="Vertical"
+            <Grid                 
                 >
+                
                 <TabControl
                     x:Name="EditorsContainer"
                     VerticalContentAlignment="Stretch"
-                    ItemTemplate="{StaticResource CustomHeaderTemplate}"
+                    ItemTemplate="{StaticResource CustomHeaderTemplate}" BorderThickness="0,1,1,1"
                     />
-            </StackPanel>
+            </Grid>
 
         </DockPanel>
 

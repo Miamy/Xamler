@@ -6,19 +6,28 @@
              xmlns:local="clr-namespace:WpfApp.Controls.EditorView"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch"
+        >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <ScrollViewer
+            Grid.Column="0" 
+            >
         <TextBox
             x:Name="TextEditor"
-            Grid.Column="0"
+            
+            ScrollViewer.CanContentScroll="True" 
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Auto"
             
             />
-
+        </ScrollViewer>
         <GridSplitter
             Grid.Column="1"
             />

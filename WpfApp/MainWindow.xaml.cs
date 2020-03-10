@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,11 +17,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
 using WpfApp.Commands;
 using WpfApp.Controls.EditorView;
 using WpfApp.Controls.ToolPanel;
 using XamlerModel;
 using XamlerModel.Classes;
+using XamlerModel.Classes.PropertiesModel;
 using XamlerModel.Interfaces;
 
 namespace WpfApp
@@ -43,7 +46,7 @@ namespace WpfApp
             }
         }
 
-        public ToolboxModel ToolboxModel { get; set; }
+        public ToolboxModel Toolbox { get; set; }
 
 
         //public IAppSettings AppSettings { get; set; } = new AppSettings();
@@ -52,7 +55,8 @@ namespace WpfApp
         //private List<EditorView> _editors;
         public ObservableCollection<EditorView> Editors { get; set; }
 
-    private TreeView _objectsTreeView; 
+        private TreeView _objectsTreeView;
+        private TreeView _propertiesTree;
 
 
         public MainWindow()
@@ -83,17 +87,18 @@ namespace WpfApp
             Models.PropertyChanged += ModelPropertyChanged;
             Models.DocumentAdded += ModelsDocumentAdded;
 
-            ToolboxModel = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
+            Toolbox = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
             var ToolBoxListBox = (ListBox)GetByUid(ToolboxToolbox, "ToolBoxListBoxUid");
             if (ToolBoxListBox != null)
             {
-                ToolBoxListBox.ItemsSource = ToolboxModel.Types; //this should be done in code, because listbox located inside a container
+                ToolBoxListBox.ItemsSource = Toolbox.Types; //this should be done in code, because listbox located inside a container
             }
 
             Editors = new ObservableCollection<EditorView>();
 
             //EditorsContainer.ItemsSource = Editors;
 
+            _propertiesTree = (TreeView)GetByUid(PropertiesToolbox, "PropertiesTree");
 
             DataContext = this;
         }
@@ -119,9 +124,20 @@ namespace WpfApp
             return null;
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void PropertiesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.RemovedItems.Count > 0)
+            {
+                var oldPage = (TabItem)e.RemovedItems[0];
+                oldPage.Content = null;
+            }
+            if (e.AddedItems.Count > 0)
+            {
+                var newPage = (TabItem)e.AddedItems[0];
+                newPage.Content = _propertiesTree;
+            }
 
+            FillPropertiesTable();
         }
 
         #region Commands
@@ -202,9 +218,20 @@ namespace WpfApp
         }
         #endregion
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void ObjectsView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            
+            if (Models.CurrentModel == null)
+            {
+                return;
+            }
+
+            Models.CurrentModel.CurrentNode = (XmlNode)e.NewValue;
+            if (Models.CurrentModel.CurrentNode == null)
+            {
+                return;
+            }
+
+
         }
 
 
@@ -213,38 +240,103 @@ namespace WpfApp
             switch (e.PropertyName)
             {
                 case "CurrentModel":
-                    var doc = ((XamlDocuments)sender).CurrentModel;
+                    var model = ((XamlDocuments)sender).CurrentModel;
+                    if (model == null)
+                    {
+                        return;
+                    }
+
+                    if (_objectsTreeView != null)
+                    {
+                        _objectsTreeView.ItemsSource = model.Dom;
+                    }
+
+                    model.PropertyChanged += ModelPropertyChanged;
+                    break;
+
+                case "CurrentNode":
+                    var doc = (XamlDocument)sender;
                     if (doc == null)
                     {
                         return;
                     }
-                    //FillPropertiesTable();
 
-                    if (_objectsTreeView != null)
+                    var node = doc.CurrentNode;
+                    if (node == null)
                     {
-                        _objectsTreeView.ItemsSource = doc.Dom;
+                        return;
                     }
 
+                    FillPropertiesTable();
+
+                    break;
+            }
+        }
+
+        private void FillPropertiesTable()
+        {
+            var node = Models.CurrentModel?.CurrentNode;
+            if (node == null)
+            {
+                return;
+            }
+
+            var typeName = "Xamarin.Forms." + node.Name;
+            var type = Toolbox.GetType(typeName);
+            if (type == null)
+                return;
+
+            //var root = new PropertyViewModel(type, null);
+            var parent = (TabItem)_propertiesTree.Parent;
+            PropertyViewModel.PropertiesKind kind;
+            switch (parent.Uid)
+            {
+                case "AllPropertiesPage":
+                    kind = PropertyViewModel.PropertiesKind.All;
+                    break;
+                case "AssignedPropertiesPage":
+                    kind = PropertyViewModel.PropertiesKind.Assigned;
+                    break;
+                default:
+                    kind = PropertyViewModel.PropertiesKind.All;
+                    break;
+            }
+
+            var propertiesViewModel = new PropertiesViewModel(type, node);
+
+            //_propertiesTree.DataContext = propertiesViewModel;
+            switch (kind)
+            {
+                case PropertyViewModel.PropertiesKind.All:
+                    _propertiesTree.ItemsSource = propertiesViewModel.Properties;
+                    break;
+                case PropertyViewModel.PropertiesKind.Assigned:
+                    _propertiesTree.ItemsSource = propertiesViewModel.AssignedProperties;
                     break;
             }
         }
 
         private void ModelsDocumentAdded(object sender, XamlDocumentChangedEventArgs e)
         {
-            var editor = new EditorView(e.Document);
+            var editor = new EditorView(e.Document)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
             Editors.Add(editor);
 
             var tab = new TabItem
             {
                 Content = editor,
                 Header = System.IO.Path.GetFileName(e.Document.FileName),
-                Tag = e.Document.FileName
+                Tag = e.Document.FileName,
+                VerticalAlignment = VerticalAlignment.Stretch
             };
             EditorsContainer.Items.Add(tab);
-            
+            EditorsContainer.SelectedItem = tab;
         }
 
 
-       
+
     }
 }
