@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -15,17 +16,56 @@ namespace XamlerModel.Classes.PropertiesModel
 
         public PropertyInfo PropertyInfo { get; set; }
 
-        public object XmlValue { get; set; }
+        private object _xmlValue;
+        public object XmlValue
+        {
+            get => _xmlValue;
+            set
+            {
+                if (_xmlValue == value)
+                {
+                    return;
+                }
+                //_xmlValue = value;
+
+                try
+                {
+                    _xmlValue = Convert.ChangeType(value, Type, CultureInfo.CurrentUICulture);
+                }
+                catch (Exception)
+                {
+                    _xmlValue = value;
+                }
+
+                if (_xmlValue.Equals(DefaultValue))
+                {
+                    _xmlValue = null;
+                }
+                OnPropertyChanged();
+                OnPropertyChanged("HasValue");
+                if (Parent != null)
+                {
+                    Parent.OnPropertyChanged();
+                    Parent.OnPropertyChanged("HasValue");
+                }
+            }
+        }
         public object DefaultValue { get; set; }
         public object Value
         {
             get
             {
-                if (XmlValue != null)
+                if (HasValue)
                     return XmlValue;
                 return DefaultValue;
             }
+            set
+            {
+                XmlValue = value;
+                //OnPropertyChanged();
+            }
         }
+        public bool HasValue => XmlValue != null;
 
         public ObservableCollection<PropertyViewModel> Children { get; }
 
@@ -90,16 +130,17 @@ namespace XamlerModel.Classes.PropertiesModel
             return Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
         }
 
-        #endregion // NameContainsText
+        #endregion 
 
-        public PropertyViewModel Parent { get; }
+        public PropertyViewModel Parent { get; set; }
 
 
-       
 
-        public PropertyViewModel(PropertyInfo propertyInfo, object instance, string parentPrefix = "")
+
+        public PropertyViewModel(PropertyViewModel parent, PropertyInfo propertyInfo, object instance, string parentPrefix = "")
         {
             PropertyInfo = propertyInfo;
+            Parent = parent;
 
             Children = new ObservableCollection<PropertyViewModel>();
             if (parentPrefix == "")
@@ -111,7 +152,7 @@ namespace XamlerModel.Classes.PropertiesModel
                     {
                         try
                         {
-                            Children.Add(new PropertyViewModel(child, instance, PropertyInfo.Name + "."));
+                            Children.Add(new PropertyViewModel(this, child, instance, PropertyInfo.Name + "."));
                         }
                         catch (Exception) // no paramless constructor...
                         {
@@ -146,7 +187,7 @@ namespace XamlerModel.Classes.PropertiesModel
 
         #endregion // INotifyPropertyChanged Members
 
-   
+
         public static object GetPropertyValue(object instance, string propertyName)
         {
             if (instance == null)
@@ -158,7 +199,7 @@ namespace XamlerModel.Classes.PropertiesModel
                 throw new ArgumentException("Value cannot be null.", "propertyName");
             }
 
-            if (propertyName.Contains(".")) 
+            if (propertyName.Contains("."))
             {
                 var temp = propertyName.Split(new char[] { '.' }, 2);
                 return GetPropertyValue(GetPropertyValue(instance, temp[0]), temp[1]);

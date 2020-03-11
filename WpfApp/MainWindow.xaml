@@ -55,47 +55,9 @@
             </DockPanel>
         </DataTemplate>
 
-        <HierarchicalDataTemplate
-            DataType    = "{x:Type vm:PropertiesViewModel}"
-            ItemsSource="{Binding Properties}">
-
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" SharedSizeGroup="A"/>
-                    <ColumnDefinition Width="4" SharedSizeGroup="B"/>
-                    <ColumnDefinition Width="*" SharedSizeGroup="C" />
-                </Grid.ColumnDefinitions>
-                <TextBlock 
-                    Grid.Column="0"
-                    Text="{Binding Name}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    />
-                <GridSplitter 
-                    Grid.Column="1" 
-                    ShowsPreview="True"
-                    Width="2"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Stretch"
-                    />
-                <TextBox
-                    Grid.Column="2"
-                    Text="{Binding Value, Mode=OneWay}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                    BorderThickness="0"
-                    />
-            </Grid>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate 
-            DataType    = "{x:Type vm:PropertyViewModel}"
-            ItemsSource="{Binding Children}">
-
-            <Grid>
+        <ControlTemplate x:Key="PropertiesGrid">
+            <Grid
+                >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
@@ -109,7 +71,20 @@
                     Text="{Binding Name}"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"
-                    />
+                    GotFocus="TextBox_GotFocus"
+                    >
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontWeight" Value="Normal"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasValue}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
                 <GridSplitter 
                     Grid.Column="1" 
                     ShowsPreview="True"
@@ -117,14 +92,31 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Stretch"
                     />
+
                 <TextBox 
-                       Grid.Column="2"
-                    Text="{Binding Value, Mode=OneWay}"
+                    Grid.Column="2"
+                    Text="{Binding Value, Mode=TwoWay}"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                     BorderThickness="0"
+                    GotFocus="TextBox_GotFocus"
                     />
             </Grid>
+        </ControlTemplate>
+
+
+        <HierarchicalDataTemplate
+            DataType    = "{x:Type vm:PropertiesViewModel}"
+            ItemsSource="{Binding Properties}">
+            <Control Template="{StaticResource PropertiesGrid}"/>
+
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate 
+            DataType    = "{x:Type vm:PropertyViewModel}"
+            ItemsSource="{Binding Children}">
+
+            <Control Template="{StaticResource PropertiesGrid}"/>
 
         </HierarchicalDataTemplate>
 
@@ -148,7 +140,7 @@
                 <MenuItem
                     Command="commands:CommonCommands.OpenFile"
                     />
-                
+
                 <Separator/>
 
 
@@ -276,26 +268,99 @@
                     <tp:ToolPanel.PlaceHolder>
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+
                             <StackPanel
                                 Grid.Row="0"
                                 Orientation="Horizontal"
-                                Height="20"
+                                VerticalAlignment="Stretch"
                                 >
+                                <TextBlock 
+                                    Margin="6,0"
+                                    Text="Name"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Width="30"
+                                    />
+                                <TextBox 
+                                    Margin="6,0"
+                                    Text=""
+                                    HorizontalAlignment="Stretch"
+                                    Width="200"
+                                    Height="20"
+                                    />
+                                <Button
+                                    Height="20"
+                                    Width="20"
+                                    Style="{StaticResource ButtonStyle}"                                    
+                                    >
+                                </Button>
+                                <Button
+                                    Height="20"
+                                    Width="20"
+                                    Style="{StaticResource ButtonStyle}"                                    
+                                    >
+                                </Button>
                             </StackPanel>
-                            
+
+                            <StackPanel
+                                Grid.Row="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Stretch"
+                                >
+                                <TextBlock 
+                                    Margin="6,0"
+                                    Text="Type"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Width="30"
+                                    />
+                                <TextBlock 
+                                    Margin="6,0"
+                                    Text=""
+                                    HorizontalAlignment="Stretch"
+                                    Width="200"
+                                    Height="20"
+                                    />
+                            </StackPanel>
+
+                            <StackPanel 
+                                x:Uid="PropertiesSearchPanel"
+                                Grid.Row="2"
+                                HorizontalAlignment="Stretch" 
+                                Margin="4" 
+                                Orientation="Horizontal"
+                                VerticalAlignment="Bottom"
+                                >
+                                <TextBox 
+                                    KeyDown="searchTextBox_KeyDown" 
+                                    Margin="6,0"
+                                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalAlignment="Stretch"
+                                    Width="200"
+                                    />
+                                <Button 
+                                    Command="{Binding SearchCommand}" 
+                                    Content="_Find" 
+                                    Padding="8,0" 
+                                    HorizontalAlignment="Right"
+                                    />
+                            </StackPanel>
+
                             <TabControl 
                                 Grid.IsSharedSizeScope="True"
-                                Grid.Row="1"
+                                Grid.Row="3"
                                 VerticalContentAlignment="Stretch"
                                 VerticalAlignment="Stretch" 
                                 TabStripPlacement="Bottom"
                                 BorderThickness="0" 
                                 SelectionChanged="PropertiesTabControl_SelectionChanged"                            
                                 >
-                        
+
                                 <TabItem
                                     x:Uid="AllPropertiesPage"
                                     Header="All"
@@ -305,6 +370,9 @@
                                         x:Uid="PropertiesTree"
                                         HorizontalAlignment="Stretch" 
                                         VerticalAlignment="Stretch" 
+                                        
+                                        PreviewKeyDown="PropertiesTree_PreviewKeyDown"
+                                        PreviewMouseDown="PropertiesTree_PreviewMouseDown"
                                         />
 
                                 </TabItem>
@@ -318,9 +386,9 @@
                         </Grid>
                     </tp:ToolPanel.PlaceHolder>
                 </tp:ToolPanel>
-                
 
-            </Grid>            
+
+            </Grid>
             <osc:DockPanelSplitter DockPanel.Dock="Right" Width="4"/>
 
             <Grid
@@ -356,7 +424,7 @@
 
             <Grid                 
                 >
-                
+
                 <TabControl
                     x:Name="EditorsContainer"
                     VerticalContentAlignment="Stretch"

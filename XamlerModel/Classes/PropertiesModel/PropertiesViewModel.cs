@@ -26,10 +26,13 @@ namespace XamlerModel.Classes.PropertiesModel
 
             Properties = new List<PropertyViewModel>();
             FillProperties();
+
+            SearchCommand = new PropertiesViewModel.SearchInPropertiesCommand(this);
         }
 
         public void FillProperties()
         {
+            Properties.Clear();
             var instance = Activator.CreateInstance(Parent);
             var allProperties = Parent.GetBindableProperties();
 
@@ -37,19 +40,77 @@ namespace XamlerModel.Classes.PropertiesModel
             {
                 foreach (var current in allProperties)
                 {
-                    var property = new PropertyViewModel(current, instance);
+                    if (!string.IsNullOrEmpty(SearchText) && current.Name.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) == -1)
+                    {
+                        continue;
+                    }
+
+                    var property = new PropertyViewModel(null, current, instance);
                     if (Node?.Attributes != null)
                     {
                         var xmlAttribute = Node.Attributes.GetNamedItem(current.Name);
-                        property.XmlValue = xmlAttribute?.Value;
+                        if (xmlAttribute != null)
+                        {
+                            property.XmlValue = xmlAttribute.Value;
+                        }
 
                     }
                     Properties.Add(property);
                 }
             }
         }
-  
+
+
+        string _searchText = string.Empty;
+
+
+        public ICommand SearchCommand { get; }
+
+        private class SearchInPropertiesCommand : ICommand
+        {
+            readonly PropertiesViewModel _propertiesModel;
+
+            public SearchInPropertiesCommand(PropertiesViewModel propertiesModel)
+            {
+                _propertiesModel = propertiesModel;
+            }
+
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+
+            event EventHandler ICommand.CanExecuteChanged
+            {
+                // I intentionally left these empty because
+                // this command never raises the event, and
+                // not using the WeakEvent pattern here can
+                // cause memory leaks.  WeakEvent pattern is
+                // not simple to implement, so why bother.
+                add { }
+                remove { }
+            }
+
+            public void Execute(object parameter)
+            {
+                _propertiesModel.FillProperties();
+            }
+        }
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (value == _searchText)
+                    return;
+
+                _searchText = value;
+            }
+        }
+
+
+
     }
 
-   
 }

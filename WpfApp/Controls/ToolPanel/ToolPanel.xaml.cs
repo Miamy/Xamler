@@ -31,7 +31,7 @@ namespace WpfApp.Controls.ToolPanel
             set
             {
                 _backColor = value;
-                RaisePropertyChanged("BackColor");
+                OnPropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace WpfApp.Controls.ToolPanel
             set
             {
                 _foreColor = value;
-                RaisePropertyChanged("ForeColor");
+                OnPropertyChanged();
             }
         }
 
@@ -65,15 +65,12 @@ namespace WpfApp.Controls.ToolPanel
                     BackColor = new SolidColorBrush(Colors.Navy);
                     ForeColor = new SolidColorBrush(Colors.White);
                 }
-
-
-
             }
         }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -82,8 +79,8 @@ namespace WpfApp.Controls.ToolPanel
         DependencyProperty.Register("PlaceHolder", typeof(object), typeof(ToolPanel), new UIPropertyMetadata(null));
         public object PlaceHolder
         {
-            get { return (object)GetValue(PlaceHolderProperty); }
-            set { SetValue(PlaceHolderProperty, value); }
+            get => GetValue(PlaceHolderProperty); 
+            set => SetValue(PlaceHolderProperty, value); 
         }
 
 
@@ -92,6 +89,7 @@ namespace WpfApp.Controls.ToolPanel
         {
             InitializeComponent();
             DataContext = this;
+            //DataContext = Parent;
             IsActive = false;
         }
     }

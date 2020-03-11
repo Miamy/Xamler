@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using WpfApp.Classes.Extensions;
 using WpfApp.Commands;
 using WpfApp.Controls.EditorView;
 using WpfApp.Controls.ToolPanel;
@@ -47,6 +48,7 @@ namespace WpfApp
         }
 
         public ToolboxModel Toolbox { get; set; }
+        public PropertiesViewModel PropertiesViewModel { get; set; }
 
 
         //public IAppSettings AppSettings { get; set; } = new AppSettings();
@@ -106,6 +108,9 @@ namespace WpfApp
             _propertiesTree = (TreeView)GetByUid(PropertiesToolbox, "PropertiesTree");
 
             DataContext = this;
+
+            //var propertiesSearchPanel = (StackPanel)GetByUid(PropertiesToolbox, "PropertiesSearchPanel");
+            //propertiesSearchPanel.DataContext = PropertiesViewModel;
         }
 
         private void Toolbox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -292,7 +297,6 @@ namespace WpfApp
             if (type == null)
                 return;
 
-            //var root = new PropertyViewModel(type, null);
             var parent = (TabItem)_propertiesTree.Parent;
             PropertyViewModel.PropertiesKind kind;
             switch (parent.Uid)
@@ -308,18 +312,22 @@ namespace WpfApp
                     break;
             }
 
-            var propertiesViewModel = new PropertiesViewModel(type, node);
+            PropertiesViewModel = new PropertiesViewModel(type, node);
 
-            //_propertiesTree.DataContext = propertiesViewModel;
+            _propertiesTree.DataContext = PropertiesViewModel;
             switch (kind)
             {
                 case PropertyViewModel.PropertiesKind.All:
-                    _propertiesTree.ItemsSource = propertiesViewModel.Properties;
+                    _propertiesTree.ItemsSource = PropertiesViewModel.Properties;
                     break;
                 case PropertyViewModel.PropertiesKind.Assigned:
-                    _propertiesTree.ItemsSource = propertiesViewModel.AssignedProperties;
+                    _propertiesTree.ItemsSource = PropertiesViewModel.AssignedProperties;
                     break;
             }
+
+            var propertiesSearchPanel = (StackPanel)GetByUid(PropertiesToolbox, "PropertiesSearchPanel");
+            propertiesSearchPanel.DataContext = PropertiesViewModel;
+
         }
 
         private void ModelsDocumentAdded(object sender, XamlDocumentChangedEventArgs e)
@@ -355,6 +363,52 @@ namespace WpfApp
 
             //windowSettings.Settings.Add(new DependencyPropertySetting("ToolboxToolbox.ActualHeight", ToolboxToolbox, FrameworkElement.ActualHeightProperty, ToolboxToolbox.ActualHeight));
             windowSettings.Settings.Add(new PropertySetting("LastXamlFolder", this, "LastXamlFolder", LastXamlFolder));
+        }
+
+        void searchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                PropertiesViewModel.SearchCommand.Execute(null);
+        }
+
+        private void PropertiesTree_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var index = _propertiesTree.Items.CurrentPosition;
+            switch (e.Key)
+            {
+                case Key.Up:
+                    if (index > 0)
+                    {
+                        index--;
+                    }
+                    break;
+                case Key.Down:
+                    if (index < _propertiesTree.Items.Count - 1)
+                    {
+                        index++;
+                    }
+                    break;
+                case Key.Home:
+                    index = 0;
+                    break;
+                case Key.End:
+                    index = _propertiesTree.Items.Count - 1;
+                    break;
+            }
+
+            if (index > -1)
+            {
+                _propertiesTree.SelectItem(_propertiesTree.Items[index]);
+            }
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void PropertiesTree_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _propertiesTree.SelectItem(((FrameworkElement)e.OriginalSource).DataContext);
         }
     }
 }

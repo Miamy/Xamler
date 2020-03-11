@@ -22,7 +22,86 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
+
+            <SolidColorBrush
+        x:Key="ThemedBackground"
+        Color="AliceBlue"
+    />
+
+            <Style
+        x:Key="ButtonStyle"
+        TargetType="Button"
+        >
+                <Setter 
+            Property="Background">
+                    <Setter.Value>
+                        <DynamicResource 
+                    ResourceKey="ThemedBackground" />
+                    </Setter.Value>
+                </Setter>
+                <Setter 
+            Property="BorderBrush">
+                    <Setter.Value>
+                        <DynamicResource 
+                    ResourceKey="ThemedBackground" />
+                    </Setter.Value>
+                </Setter>
+
+                <Setter 
+            Property="Height"
+            Value="30"/>
+                <Setter 
+            Property="VerticalAlignment"
+            Value="Center"/>
+                <Setter 
+            Property="HorizontalAlignment"
+            Value="Center"/>
+                <Setter 
+            Property="Margin"
+            Value="2,2,2,2"/>
+                <Setter
+            Property="Foreground"
+            Value="DarkBlue"
+            />
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border 
+                        CornerRadius="0"
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="1" 
+                        Background="{TemplateBinding Background}"
+                        >
+
+                                <ContentPresenter x:Name="MyContentPresenter"  
+                                          Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="Center" 
+                                          VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <StaticResource 
+                            ResourceKey="ThemedBackground" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Foreground" Value="LightGray"/>
+                    </Trigger>
+
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="SteelBlue"/>
+                        <Setter Property="Background" Value="AliceBlue"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
     
