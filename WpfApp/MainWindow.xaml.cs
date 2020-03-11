@@ -25,7 +25,6 @@ using WpfApp.Controls.ToolPanel;
 using XamlerModel;
 using XamlerModel.Classes;
 using XamlerModel.Classes.PropertiesModel;
-using XamlerModel.Interfaces;
 
 namespace WpfApp
 {
@@ -61,6 +60,8 @@ namespace WpfApp
 
         private readonly WindowSettings windowSettings;
 
+        public string LastXamlFolder { get; set; }
+
         public MainWindow()
         {
             // create settings before InitializeComponent()
@@ -68,9 +69,6 @@ namespace WpfApp
 
             InitializeComponent();
 
-            windowSettings.Settings.Add(new DependencyPropertySetting("LeftContainer.Width", LeftContainer, ColumnDefinition.WidthProperty, LeftContainer.Width));
-            windowSettings.Settings.Add(new DependencyPropertySetting("RightContainer.Width", RightContainer, ColumnDefinition.WidthProperty, RightContainer.Width));
-            windowSettings.Settings.Add(new DependencyPropertySetting("RightContainer.Height", BottomContainer, ColumnDefinition.WidthProperty, BottomContainer.Height));
 
             CreateCommands();
 
@@ -179,13 +177,16 @@ namespace WpfApp
 
         private static void DoOpenFile(object sender, ExecutedRoutedEventArgs e)
         {
+            var main = (MainWindow)Application.Current.MainWindow;
+
             var openFile = new Microsoft.Win32.OpenFileDialog
             {
-                InitialDirectory = @"D:\Projects\Csharp\_Workspace\loadpad\loadpad\ConfigPages",
+                InitialDirectory = //@"D:\Projects\Csharp\_Workspace\loadpad\loadpad\ConfigPages",
+                    main.LastXamlFolder,
                 //@"e:\CSharp\";
                 DefaultExt = "xaml",
                 Filter = "xaml files (*.xaml)|*.xaml|All files (*.*)|*.*",
-                FileName = "NewSettingsPage.xaml"
+                FileName = "MainPageSecondTry.xaml"
             };
 
             if (openFile.ShowDialog() != true)
@@ -195,11 +196,9 @@ namespace WpfApp
             if (!File.Exists(filename))
                 return;
 
-            var main = (MainWindow)Application.Current.MainWindow;
-
             var command = main.Models.AddDocumentCommand;
             command.Execute(filename);
-
+            main.LastXamlFolder = System.IO.Path.GetFullPath(filename);
         }
 
         private RelayCommand _closeCommand;
@@ -343,7 +342,19 @@ namespace WpfApp
             EditorsContainer.SelectedItem = tab;
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            //windowSettings.Save();
+        }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            windowSettings.Settings.Add(new DependencyPropertySetting("LeftContainer.Width", LeftContainer, FrameworkElement.WidthProperty, LeftContainer.Width));
+            windowSettings.Settings.Add(new DependencyPropertySetting("RightContainer.Width", RightContainer, FrameworkElement.WidthProperty, RightContainer.Width));
+            windowSettings.Settings.Add(new DependencyPropertySetting("BottomContainer.Height", BottomContainer, FrameworkElement.HeightProperty, BottomContainer.Height));
 
+            //windowSettings.Settings.Add(new DependencyPropertySetting("ToolboxToolbox.ActualHeight", ToolboxToolbox, FrameworkElement.ActualHeightProperty, ToolboxToolbox.ActualHeight));
+            windowSettings.Settings.Add(new PropertySetting("LastXamlFolder", this, "LastXamlFolder", LastXamlFolder));
+        }
     }
 }

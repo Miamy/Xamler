@@ -16,7 +16,6 @@ using WinFormsApp.Windows;
 using XamlerModel;
 using XamlerModel.Classes;
 using XamlerModel.Classes.PropertiesModel;
-using XamlerModel.Interfaces;
 
 namespace WinFormsApp
 {
@@ -27,7 +26,6 @@ namespace WinFormsApp
         private List<Panel> _toolWindows;
         private List<XamlDocumentEditor> _editors;
 
-        public IAppSettings AppSettings { get; set; } = new AppSettings();
         public List<XamlDocument> Models { get; set; }
 
         private XamlDocument _currentModel;
@@ -165,24 +163,10 @@ namespace WinFormsApp
 
         private void LoadSettings()
         {
-            AppSettings.Load(this);
-
-            AppSettings.Load(mainContainer);
-            AppSettings.Load(leftContainer);
-            AppSettings.Load(centerContainer);
-            AppSettings.Load(rightContainer);
-            AppSettings.Load(leftInnerContainer);
         }
 
         public void Save()
         {
-            AppSettings.Save(this);
-
-            AppSettings.Save(mainContainer);
-            AppSettings.Save(leftContainer);
-            AppSettings.Save(leftInnerContainer);
-            AppSettings.Save(centerContainer);
-            AppSettings.Save(rightContainer);
 
             foreach (var editor in _editors)
             {
@@ -258,7 +242,7 @@ namespace WinFormsApp
                 ToolTipText = xaml.FileName
             };
 
-            var editor = new XamlDocumentEditor(xaml, AppSettings)
+            var editor = new XamlDocumentEditor(xaml)
             {
                 Parent = tab,
                 Dock = DockStyle.Fill

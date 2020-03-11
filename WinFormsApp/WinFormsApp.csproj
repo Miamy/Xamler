@@ -55,7 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\AppSettings.cs" />
     <Compile Include="Classes\Helpers\ControlExtentions.cs" />
     <Compile Include="Classes\Helpers\WindowHelperClass.cs" />
     <Compile Include="Controls\SyncTextBox.cs">

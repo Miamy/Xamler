@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:WpfApp"
         xmlns:vm="clr-namespace:XamlerModel.Classes.PropertiesModel;assembly=XamlerModel"
         mc:Ignorable="d"
-        Title="Xamler" Height="450" Width="800">
+        Title="Xamler" Height="450" Width="800" Closing="Window_Closing" Loaded="Window_Loaded">
 
     <Window.Resources>
 
@@ -100,7 +100,7 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" SharedSizeGroup="A"/>
+                    <ColumnDefinition Width="80" SharedSizeGroup="A"/>
                     <ColumnDefinition Width="4" SharedSizeGroup="B"/>
                     <ColumnDefinition Width="*" SharedSizeGroup="C" />
                 </Grid.ColumnDefinitions>

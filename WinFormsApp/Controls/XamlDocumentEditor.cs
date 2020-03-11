@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XamlerModel;
-using XamlerModel.Interfaces;
 using System.IO;
 using System.Runtime.InteropServices;
 using XamlerModel.Classes;
@@ -17,13 +16,11 @@ namespace WinFormsApp.Controls
 {
     public partial class XamlDocumentEditor : UserControl
     {
-        private IAppSettings _settings;
         public XamlDocument Xaml { get; set; }
 
-        public XamlDocumentEditor(XamlDocument xaml, IAppSettings settings)
+        public XamlDocumentEditor(XamlDocument xaml)
         {
             InitializeComponent();
-            _settings = settings;
 
             Xaml = xaml;
             LoadFromFile(Xaml);
@@ -51,7 +48,6 @@ namespace WinFormsApp.Controls
 
         public void Save()
         {
-            _settings.Save(mainSplitContainer);
         }
 
         private void codeEditor_KeyPress(object sender, KeyPressEventArgs e)

@@ -32,8 +32,6 @@ namespace XamlerModel.Classes.PropertiesModel
         public string Name => PropertyInfo.Name;
         public Type Type => PropertyInfo.PropertyType;
 
-        //public bool HasDefaultValue => /*Value == null && DefaultValue == null || */XmlValue != null && XmlValue.Equals(DefaultValue);
-
         public XmlAttribute Attribute { get; set; }
 
 
@@ -99,38 +97,21 @@ namespace XamlerModel.Classes.PropertiesModel
 
        
 
-        public PropertyViewModel(PropertyInfo propertyInfo, object instance, bool goDeeper = true)
+        public PropertyViewModel(PropertyInfo propertyInfo, object instance, string parentPrefix = "")
         {
             PropertyInfo = propertyInfo;
 
-            //Children = new ReadOnlyCollection<PropertyViewModel>(
-            //        (from child in Property.GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).OrderBy(p => p.Name)
-            //         select new PropertyViewModel(child.PropertyType, this)).ToList());
-
             Children = new ObservableCollection<PropertyViewModel>();
-            if (goDeeper)
+            if (parentPrefix == "")
             {
-                //var children = PropertyInfo.PropertyType.GetBindableProperties(); 
                 var children = PropertyInfo.PropertyType.GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).OrderBy(p => p.Name);
                 foreach (var child in children)
                 {
-                    //if (!child.PropertyType.IsAbstract && !child.PropertyType.IsPrimitive && child.PropertyType != typeof(string))
-                    //{
-                    //    try
-                    //    {
-                    //        var instanceOfChild = Activator.CreateInstance(child.PropertyType);
-                    //        Children.Add(new PropertyViewModel(child, instanceOfChild, false));
-                    //    }
-                    //    catch (Exception) // no paramless constructor...
-                    //    {
-                    //    }
-                    //}
-
-                    if (child.PropertyType.IsPrimitive)
+                    if (child.PropertyType.IsPrimitive && child.DeclaringType?.Name != "String")
                     {
                         try
                         {
-                            Children.Add(new PropertyViewModel(child, null, false));
+                            Children.Add(new PropertyViewModel(child, instance, PropertyInfo.Name + "."));
                         }
                         catch (Exception) // no paramless constructor...
                         {
@@ -139,7 +120,7 @@ namespace XamlerModel.Classes.PropertiesModel
                 }
             }
 
-            DefaultValue = GetDefaultValue(PropertyInfo, instance);
+            DefaultValue = GetPropertyValue(instance, parentPrefix + PropertyInfo.Name);
         }
 
         public PropertyViewModel(XmlAttribute attribute)
@@ -165,44 +146,28 @@ namespace XamlerModel.Classes.PropertiesModel
 
         #endregion // INotifyPropertyChanged Members
 
-        public static object GetDefaultValue(PropertyInfo property, object instance)
+   
+        public static object GetPropertyValue(object instance, string propertyName)
         {
             if (instance == null)
-                return "";
-            object value = null;
-            try
             {
-                value = property.GetValue(instance);
+                throw new ArgumentException("Value cannot be null.", "instance");
             }
-            catch (Exception)
+            if (propertyName == null)
             {
+                throw new ArgumentException("Value cannot be null.", "propertyName");
             }
-            if (value == null)
-                return "";
-            if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string) || property.PropertyType.IsValueType)
-                return value.ToString();
 
-            try
+            if (propertyName.Contains(".")) 
             {
-                return GetComplexValue(value);
+                var temp = propertyName.Split(new char[] { '.' }, 2);
+                return GetPropertyValue(GetPropertyValue(instance, temp[0]), temp[1]);
             }
-            catch (Exception)
+            else
             {
-                return "<>";
+                var property = instance.GetType().GetProperty(propertyName);
+                return property?.GetValue(instance, null);
             }
-            
-        }
-
-        public static string GetComplexValue(object instance)
-        {
-            var val = instance.GetType()
-                          .GetProperties()
-                          .Where(p => p.CanRead)
-                          .ToList();
-            var res = "";
-            foreach (var pair in val)
-                res += pair.GetValue(instance).ToString() + ";";
-            return res;
         }
     }
 }

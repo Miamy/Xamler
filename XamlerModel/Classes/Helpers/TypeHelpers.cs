@@ -48,6 +48,26 @@ namespace WinFormsApp.Classes.Helpers
             return result.OrderBy(p => p.Name).ToList();
         }
 
+        public static List<EventInfo> GetBindableEvents(this Type type)
+        {
+            var allProperties = type.GetEvents(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)./*Where(p => p.CanRead).*/ToList();
+            if (allProperties == null)
+            {
+                return null;
+            }
+
+            var result = new List<EventInfo>();
+            foreach (var current in allProperties)
+            {
+                if (BindableFound(type, current.Name))
+                {
+                    result.Add(current);
+                }
+
+            }
+            return result.OrderBy(p => p.Name).ToList();
+        }
+
         private static bool BindableFound(Type type, string name)
         {
             if (type == null)
@@ -62,6 +82,8 @@ namespace WinFormsApp.Classes.Helpers
 
             return BindableFound(type.BaseType, name);
         }
+
+
     }
 
 }
