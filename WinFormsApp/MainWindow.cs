@@ -154,7 +154,7 @@ namespace WinFormsApp
             Models = new List<XamlDocument>();
             _editors = new List<XamlDocumentEditor>();
 
-            Toolbox = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
+            Toolbox = new ToolboxModel(Constants.PathToAssembly);
             toolBoxListBox.DataSource = Toolbox.Types;
 
             tabPagePropertiesAll.Tag = PropertyViewModel.PropertiesKind.All;

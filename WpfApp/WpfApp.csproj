@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,6 +73,32 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands\CommonCommands.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\DependencyPropertySetting.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\DependencyPropertySettingCollector.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\FrameworkElementSettings.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\GridViewColumnSetting.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\ListViewSetting.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\PropertySettingCollector.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\WindowsApplicationSettings.cs" />
+    <Compile Include="Configuration\ConfigurationWindows\WindowSettings.cs" />
+    <Compile Include="Configuration\Configuration\ApplicationSettings.cs" />
+    <Compile Include="Configuration\Configuration\FieldSetting.cs" />
+    <Compile Include="Configuration\Configuration\FieldSettingAttribute.cs" />
+    <Compile Include="Configuration\Configuration\ISetting.cs" />
+    <Compile Include="Configuration\Configuration\ISettingCollector.cs" />
+    <Compile Include="Configuration\Configuration\PropertySetting.cs" />
+    <Compile Include="Configuration\Configuration\PropertySettingAttribute.cs" />
+    <Compile Include="Configuration\Configuration\Setting.cs" />
+    <Compile Include="Configuration\Configuration\SettingCollection.cs" />
+    <Compile Include="Configuration\Configuration\SettingCollector.cs" />
+    <Compile Include="Configuration\Configuration\SettingCollectorCancelEventArgs.cs" />
+    <Compile Include="Configuration\Configuration\SettingCollectorCollection.cs" />
+    <Compile Include="Configuration\Configuration\SettingScope.cs" />
+    <Compile Include="Configuration\Configuration\SettingValueCancelEventArgs.cs" />
+    <Compile Include="Configuration\Configuration\SettingValueEventArgs.cs" />
+    <Compile Include="Configuration\Configuration\UserConfig.cs" />
+    <Compile Include="Configuration\Configuration\ValueSetting.cs" />
+    <Compile Include="Configuration\Configuration\ValueSettingBase.cs" />
     <Compile Include="Controls\DockPanelSplitter\DockPanelSplitter.cs" />
     <Compile Include="Controls\EditorView\EditorView.xaml.cs">
       <DependentUpon>EditorView.xaml</DependentUpon>

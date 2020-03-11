@@ -40,7 +40,7 @@ namespace XamlerModel.Classes
 
         public static Type GetTypeStatic(string typeName)
         {
-            var toolbox = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
+            var toolbox = new ToolboxModel(Constants.PathToAssembly);
             return toolbox.GetType(typeName);
         }
 

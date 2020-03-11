@@ -1,4 +1,5 @@
 ﻿using ClientWPF.Commands;
+using Itenso.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,12 +59,18 @@ namespace WpfApp
         private TreeView _objectsTreeView;
         private TreeView _propertiesTree;
 
+        private readonly WindowSettings windowSettings;
 
         public MainWindow()
         {
+            // create settings before InitializeComponent()
+            windowSettings = new WindowSettings(this);
+
             InitializeComponent();
 
-            //EditorsContainer.Items.Clear();
+            windowSettings.Settings.Add(new DependencyPropertySetting("LeftContainer.Width", LeftContainer, ColumnDefinition.WidthProperty, LeftContainer.Width));
+            windowSettings.Settings.Add(new DependencyPropertySetting("RightContainer.Width", RightContainer, ColumnDefinition.WidthProperty, RightContainer.Width));
+            windowSettings.Settings.Add(new DependencyPropertySetting("RightContainer.Height", BottomContainer, ColumnDefinition.WidthProperty, BottomContainer.Height));
 
             CreateCommands();
 
@@ -87,7 +94,7 @@ namespace WpfApp
             Models.PropertyChanged += ModelPropertyChanged;
             Models.DocumentAdded += ModelsDocumentAdded;
 
-            Toolbox = new ToolboxModel(@"C:\Users\Miamy\.nuget\packages\xamarin.forms\4.1.0.618606\build\net46\Xamarin.Forms.Core.dll");
+            Toolbox = new ToolboxModel(Constants.PathToAssembly);
             var ToolBoxListBox = (ListBox)GetByUid(ToolboxToolbox, "ToolBoxListBoxUid");
             if (ToolBoxListBox != null)
             {

@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:WpfApp"
         xmlns:vm="clr-namespace:XamlerModel.Classes.PropertiesModel;assembly=XamlerModel"
         mc:Ignorable="d"
-        Title="Xamler" Height="450" Width="800" WindowState="Maximized">
+        Title="Xamler" Height="450" Width="800">
 
     <Window.Resources>
 
