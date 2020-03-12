@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using WinFormsApp.Classes.Helpers;
+using XamlerModel.Classes.ToolboxModel;
 
 namespace XamlerModel.Classes.PropertiesModel
 {
@@ -30,7 +31,7 @@ namespace XamlerModel.Classes.PropertiesModel
 
                 try
                 {
-                    _xmlValue = Convert.ChangeType(value, Type, CultureInfo.CurrentUICulture);
+                    _xmlValue = Convert.ChangeType(value, Type, CultureInfo.GetCultureInfo("en-US")); //CurrentUICulture); 
                 }
                 catch (Exception)
                 {
@@ -169,7 +170,7 @@ namespace XamlerModel.Classes.PropertiesModel
             Attribute = attribute;
 
             var typeName = "Xamarin.Forms." + attribute.ParentNode.Name;
-            var type = ToolboxModel.GetTypeStatic(typeName);
+            var type = ToolboxItems.GetTypeStatic(typeName);
             if (type == null)
                 return;
 
@@ -207,7 +208,19 @@ namespace XamlerModel.Classes.PropertiesModel
             else
             {
                 var property = instance.GetType().GetProperty(propertyName);
-                return property?.GetValue(instance, null);
+                try
+                {
+                    return property?.GetValue(instance, null);
+                }
+                catch (Exception) // TODO: you MUST call Forms.Init()...
+                {
+                    var t = property?.GetType();
+                    if (t.IsValueType)
+                        return Activator.CreateInstance(t);
+
+                    return null;
+                }
+                
             }
         }
     }

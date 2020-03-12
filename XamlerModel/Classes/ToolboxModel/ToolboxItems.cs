@@ -7,17 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using WinFormsApp.Classes.Helpers;
 
-namespace XamlerModel.Classes
+namespace XamlerModel.Classes.ToolboxModel
 {
-    public class ToolboxModel
+    public class ToolboxItems
     {
         private Assembly _assembly;
 
         public string AssemblyPath { get; set; }
 
-        public List<Type> Types { get; set; }
+        public List<ToolboxItem> Types { get; set; }
 
-        public ToolboxModel(string assemblyPath)
+        public ToolboxItems(string assemblyPath)
         {
             if (!File.Exists(assemblyPath))
             {
@@ -27,7 +27,7 @@ namespace XamlerModel.Classes
             FillToolbox();
         }
 
-        public ToolboxModel()
+        public ToolboxItems()
         {
         }
 
@@ -39,7 +39,18 @@ namespace XamlerModel.Classes
                 return;
             }
             var parent = _assembly.GetType("Xamarin.Forms.BindableObject");
-            Types = _assembly.GetLoadableTypes().Where(t => t.IsPublic && t.IsClass && t.IsSubclassOf(parent)).ToList();
+            Types = _assembly.GetLoadableTypes().Where(t => t.IsPublic && t.IsClass && t.IsSubclassOf(parent)).Select(t => new ToolboxItem(t)).ToList();
+/*
+            var path = @"e:\_Images\_VS\VS2019 Image Library\vswin2019\";
+            foreach (var type in Types)
+            {
+                var name = type.Name;
+                if (Directory.Exists(path + name))
+                {
+                    File.Copy(path + name + "\\" + name + "_16x.png", @"c:\CSharp\_Workspace\Xamler\XamlerModel\Images\Toolbox\" + name + ".png");
+                }
+            }
+*/
         }
 
         public Type GetType(string typeName)
@@ -53,7 +64,7 @@ namespace XamlerModel.Classes
 
         public static Type GetTypeStatic(string typeName)
         {
-            var toolbox = new ToolboxModel(Constants.PathToAssembly);
+            var toolbox = new ToolboxItems(Constants.PathToAssembly);
             return toolbox.GetType(typeName);
         }
 

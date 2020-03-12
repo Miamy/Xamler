@@ -61,7 +61,8 @@
     <Compile Include="Classes\PropertiesModel\PropertiesViewModel.cs" />
     <Compile Include="Classes\Helpers\TypeHelpers.cs" />
     <Compile Include="Classes\PropertiesModel\PropertyViewModel.cs" />
-    <Compile Include="Classes\ToolboxModel.cs" />
+    <Compile Include="Classes\ToolboxModel\ToolboxItem.cs" />
+    <Compile Include="Classes\ToolboxModel\ToolboxItems.cs" />
     <Compile Include="Classes\XamlData.cs" />
     <Compile Include="Classes\XamlDocumentChangedEventArgs.cs" />
     <Compile Include="Classes\XamlDocuments.cs" />
@@ -74,6 +75,28 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Toolbox\Application.png" />
+    <Content Include="Images\Toolbox\Behavior.png" />
+    <Content Include="Images\Toolbox\Button.png" />
+    <Content Include="Images\Toolbox\ContentPresenter.png" />
+    <Content Include="Images\Toolbox\Editor.png" />
+    <Content Include="Images\Toolbox\Entry.png" />
+    <Content Include="Images\Toolbox\EventTrigger.png" />
+    <Content Include="Images\Toolbox\Grid.png" />
+    <Content Include="Images\Toolbox\Image.png" />
+    <Content Include="Images\Toolbox\ImageButton.png" />
+    <Content Include="Images\Toolbox\Label.png" />
+    <Content Include="Images\Toolbox\ListView.png" />
+    <Content Include="Images\Toolbox\MenuItem.png" />
+    <Content Include="Images\Toolbox\Picker.png" />
+    <Content Include="Images\Toolbox\ProgressBar.png" />
+    <Content Include="Images\Toolbox\Slider.png" />
+    <Content Include="Images\Toolbox\Span.png" />
+    <Content Include="Images\Toolbox\Tab.png" />
+    <Content Include="Images\Toolbox\TimePicker.png" />
+    <Content Include="Images\Toolbox\View.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

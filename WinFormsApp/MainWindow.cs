@@ -16,6 +16,7 @@ using WinFormsApp.Windows;
 using XamlerModel;
 using XamlerModel.Classes;
 using XamlerModel.Classes.PropertiesModel;
+using XamlerModel.Classes.ToolboxModel;
 
 namespace WinFormsApp
 {
@@ -58,7 +59,7 @@ namespace WinFormsApp
             }
         }
 
-        ToolboxModel Toolbox { get; set; }
+        ToolboxItems Toolbox { get; set; }
 
 
         private void CurrentModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -152,7 +153,7 @@ namespace WinFormsApp
             Models = new List<XamlDocument>();
             _editors = new List<XamlDocumentEditor>();
 
-            Toolbox = new ToolboxModel(Constants.PathToAssembly);
+            Toolbox = new ToolboxItems(Constants.PathToAssembly);
             toolBoxListBox.DataSource = Toolbox.Types;
 
             tabPagePropertiesAll.Tag = PropertyViewModel.PropertiesKind.All;

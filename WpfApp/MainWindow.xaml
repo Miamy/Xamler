@@ -9,10 +9,11 @@
         xmlns:local="clr-namespace:WpfApp"
         xmlns:vm="clr-namespace:XamlerModel.Classes.PropertiesModel;assembly=XamlerModel"
         mc:Ignorable="d"
-        Title="Xamler" Height="450" Width="800" Closing="Window_Closing" Loaded="Window_Loaded">
+        Title="Xamler" Height="450" Width="800" Loaded="Window_Loaded" Closing="Window_Closing">
 
     <Window.Resources>
 
+        <!--Objects toolbox-->
         <HierarchicalDataTemplate 
             x:Key="NodeTemplate"
             ItemsSource="{Binding XPath=./*}">
@@ -31,15 +32,16 @@
                 <DataTrigger Binding="{Binding Path=NodeType}"
                              Value="Element">
                     <Setter TargetName="nodeAttributes" Property="Text"
-                            Value="{Binding Converter={StaticResource MethodToValueConverter},
-                            ConverterParameter='AttributesList'}" />
+                            Value="{Binding 
+                                Converter={StaticResource MethodToValueConverter},
+                                ConverterParameter='AttributesList'}" />
                 </DataTrigger>
             </HierarchicalDataTemplate.Triggers>
         </HierarchicalDataTemplate>
 
 
 
-
+        <!--Documents-->
         <DataTemplate x:Key="CustomHeaderTemplate">
             <DockPanel LastChildFill="True">
                 <Button Content="X" DockPanel.Dock="Right"
@@ -55,6 +57,7 @@
             </DockPanel>
         </DataTemplate>
 
+        <!--Properties toolbox-->
         <ControlTemplate x:Key="PropertiesGrid">
             <Grid
                 >
@@ -104,22 +107,19 @@
             </Grid>
         </ControlTemplate>
 
-
         <HierarchicalDataTemplate
             DataType    = "{x:Type vm:PropertiesViewModel}"
             ItemsSource="{Binding Properties}">
             <Control Template="{StaticResource PropertiesGrid}"/>
-
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate 
             DataType    = "{x:Type vm:PropertyViewModel}"
             ItemsSource="{Binding Children}">
-
             <Control Template="{StaticResource PropertiesGrid}"/>
-
         </HierarchicalDataTemplate>
 
+        
     </Window.Resources>
 
 
@@ -180,7 +180,21 @@
                             >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" />
+                                    <StackPanel 
+                                        Orientation="Horizontal"
+                                        Height="26"
+                                        >
+                                        <Image 
+                                            Source="{Binding ImageName}"
+                                            MinWidth="24"
+                                            Stretch="None"
+                                            />
+                                        <TextBlock 
+                                            Text="{Binding Name}" 
+                                            VerticalAlignment="Center"
+                                            Margin="6,0,0,0"
+                                            />
+                                    </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

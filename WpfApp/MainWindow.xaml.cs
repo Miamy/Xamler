@@ -26,6 +26,7 @@ using WpfApp.Controls.ToolPanel;
 using XamlerModel;
 using XamlerModel.Classes;
 using XamlerModel.Classes.PropertiesModel;
+using XamlerModel.Classes.ToolboxModel;
 
 namespace WpfApp
 {
@@ -47,7 +48,7 @@ namespace WpfApp
             }
         }
 
-        public ToolboxModel Toolbox { get; set; }
+        public ToolboxItems Toolbox { get; set; }
         public PropertiesViewModel PropertiesViewModel { get; set; }
 
 
@@ -94,7 +95,7 @@ namespace WpfApp
             Models.PropertyChanged += ModelPropertyChanged;
             Models.DocumentAdded += ModelsDocumentAdded;
 
-            Toolbox = new ToolboxModel(Constants.PathToAssembly);
+            Toolbox = new ToolboxItems(Constants.PathToAssembly);
             var ToolBoxListBox = (ListBox)GetByUid(ToolboxToolbox, "ToolBoxListBoxUid");
             if (ToolBoxListBox != null)
             {
@@ -171,7 +172,7 @@ namespace WpfApp
 
         private static void DoExitApplication(object sender, ExecutedRoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown(); // TODO
+            System.Windows.Application.Current.MainWindow.Close();
         }
 
 
@@ -327,7 +328,6 @@ namespace WpfApp
 
             var propertiesSearchPanel = (StackPanel)GetByUid(PropertiesToolbox, "PropertiesSearchPanel");
             propertiesSearchPanel.DataContext = PropertiesViewModel;
-
         }
 
         private void ModelsDocumentAdded(object sender, XamlDocumentChangedEventArgs e)
@@ -350,10 +350,7 @@ namespace WpfApp
             EditorsContainer.SelectedItem = tab;
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            //windowSettings.Save();
-        }
+     
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -404,11 +401,18 @@ namespace WpfApp
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
+           
         }
 
         private void PropertiesTree_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             _propertiesTree.SelectItem(((FrameworkElement)e.OriginalSource).DataContext);
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            //e.Cancel = true;
+            
         }
     }
 }
