@@ -140,6 +140,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\CodeBoxControl\CodeBoxControl.csproj">
+      <Project>{fafc1291-82f4-4a3a-b70f-111dbf2ec194}</Project>
+      <Name>CodeBoxControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XamlerModel\XamlerModels.csproj">
       <Project>{C6B6158A-3A35-47AB-B71A-62284641C042}</Project>
       <Name>XamlerModels</Name>

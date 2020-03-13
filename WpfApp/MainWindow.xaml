@@ -185,7 +185,7 @@
                                         Height="26"
                                         >
                                         <Image 
-                                            Source="{Binding ImageName}"
+                                            Source="{Binding ImageName, TargetNullValue={x:Null}}"
                                             MinWidth="24"
                                             Stretch="None"
                                             />

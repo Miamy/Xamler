@@ -17,6 +17,17 @@ namespace XamlerModel.Classes.PropertiesModel
 
         public PropertyInfo PropertyInfo { get; set; }
 
+        private XmlAttribute _xmlAttribute;
+        public XmlAttribute XmlAttribute
+        {
+            get => _xmlAttribute;
+            set
+            {
+                _xmlAttribute = value;
+                XmlValue = _xmlAttribute?.Value;
+            }
+        }
+
         private object _xmlValue;
         public object XmlValue
         {
@@ -27,7 +38,6 @@ namespace XamlerModel.Classes.PropertiesModel
                 {
                     return;
                 }
-                //_xmlValue = value;
 
                 try
                 {
@@ -42,12 +52,21 @@ namespace XamlerModel.Classes.PropertiesModel
                 {
                     _xmlValue = null;
                 }
+                else
+                {
+                    if (XmlAttribute != null)
+                    {
+                        XmlAttribute.Value = _xmlValue.ToString();
+                    }
+                }
+
                 OnPropertyChanged();
                 OnPropertyChanged("HasValue");
                 if (Parent != null)
                 {
-                    Parent.OnPropertyChanged();
-                    Parent.OnPropertyChanged("HasValue");
+                    Parent.OnPropertyChanged("XmlValue");
+                    Parent.OnPropertyChanged("ChildrenXmlValue");
+                    Parent.OnPropertyChanged("HasValue");                    
                 }
             }
         }
@@ -72,8 +91,6 @@ namespace XamlerModel.Classes.PropertiesModel
 
         public string Name => PropertyInfo.Name;
         public Type Type => PropertyInfo.PropertyType;
-
-        public XmlAttribute Attribute { get; set; }
 
 
         #region IsExpanded
@@ -138,14 +155,16 @@ namespace XamlerModel.Classes.PropertiesModel
 
 
 
-        public PropertyViewModel(PropertyViewModel parent, PropertyInfo propertyInfo, object instance, string parentPrefix = "")
+        public PropertyViewModel(PropertyViewModel parent, PropertyInfo propertyInfo, object instance, string parentPrefix = "", XmlNode node = null)
         {
             PropertyInfo = propertyInfo;
             Parent = parent;
+            PropertyChanged += PropertyViewModel_PropertyChanged;
 
-            Children = new ObservableCollection<PropertyViewModel>();
             if (parentPrefix == "")
             {
+                Children = new ObservableCollection<PropertyViewModel>();
+
                 var children = PropertyInfo.PropertyType.GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).OrderBy(p => p.Name);
                 foreach (var child in children)
                 {
@@ -163,18 +182,30 @@ namespace XamlerModel.Classes.PropertiesModel
             }
 
             DefaultValue = GetPropertyValue(instance, parentPrefix + PropertyInfo.Name);
+
+            if (node != null)
+            {
+                if (node?.Attributes != null)
+                {
+                    var xmlAttribute = (XmlAttribute)node.Attributes.GetNamedItem(PropertyInfo.Name);
+                    if (xmlAttribute != null)
+                    {
+                        XmlAttribute = xmlAttribute;
+                    }
+                }
+            }
         }
 
-        public PropertyViewModel(XmlAttribute attribute)
+        private void PropertyViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Attribute = attribute;
-
-            var typeName = "Xamarin.Forms." + attribute.ParentNode.Name;
-            var type = ToolboxItems.GetTypeStatic(typeName);
-            if (type == null)
-                return;
-
+            if (e.PropertyName == "ChildrenXmlValue")
+            {
+                XmlValue = GetComplexXmlValue();
+                OnPropertyChanged("Value");
+            }
         }
+
+
 
 
         #region INotifyPropertyChanged Members
@@ -215,13 +246,31 @@ namespace XamlerModel.Classes.PropertiesModel
                 catch (Exception) // TODO: you MUST call Forms.Init()...
                 {
                     var t = property?.GetType();
-                    if (t.IsValueType)
+                    if (t.IsValueType && t.HasParameterlessConstructor())
                         return Activator.CreateInstance(t);
 
                     return null;
                 }
-                
+
             }
+        }
+
+        public string GetComplexXmlValue()
+        {
+            var result = "";
+            if (Children == null)
+            {
+                return result;
+            }
+            foreach (var child in Children)
+            {
+                result += child.Value + ",";
+            }
+            if (result.Length > 1)
+            {
+                return result.Substring(0, result.Length - 1);
+            }
+            return result;
         }
     }
 }

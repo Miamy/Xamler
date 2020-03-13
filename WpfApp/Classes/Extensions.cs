@@ -21,4 +21,32 @@ namespace WpfApp.Classes.Extensions
             }
         }
     }
+
+
+    public static class TextBoxEx
+    {
+        public static void MoveToLineStart(this TextBox textBox, int lineNumber)
+        {
+            var skipChars = textBox.GetCharacterIndexFromLineIndex(lineNumber);
+            textBox.Select(skipChars, 0);
+            textBox.Focus();
+            textBox.ScrollToLine(lineNumber);
+        }
+
+        public static void MoveToLineEnd(this TextBox textBox, int lineNumber)
+        {
+            int skipChars = textBox.GetCharacterIndexFromLineIndex(lineNumber + 1);
+            if (skipChars == -1)   //to check for last line
+            {
+                textBox.Select(textBox.Text.Length, 0);
+            }
+            else
+            {
+                textBox.Select(skipChars - 1, 0);
+            }
+            textBox.Focus();
+            textBox.ScrollToLine(lineNumber);
+        }
+    }
+
 }

@@ -33,6 +33,11 @@ namespace XamlerModel.Classes.PropertiesModel
         public void FillProperties()
         {
             Properties.Clear();
+            if (!Parent.HasParameterlessConstructor())
+            {
+                return;
+            }
+
             var instance = Activator.CreateInstance(Parent);
             var allProperties = Parent.GetBindableProperties();
 
@@ -45,16 +50,7 @@ namespace XamlerModel.Classes.PropertiesModel
                         continue;
                     }
 
-                    var property = new PropertyViewModel(null, current, instance);
-                    if (Node?.Attributes != null)
-                    {
-                        var xmlAttribute = Node.Attributes.GetNamedItem(current.Name);
-                        if (xmlAttribute != null)
-                        {
-                            property.XmlValue = xmlAttribute.Value;
-                        }
-
-                    }
+                    var property = new PropertyViewModel(null, current, instance, "", Node);               
                     Properties.Add(property);
                 }
             }

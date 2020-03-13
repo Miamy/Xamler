@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp.Controls.EditorView"
+             xmlns:c="clr-namespace:WpfApp.Controls.CodeBoxControl;assembly=CodeBoxControl" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid
@@ -16,25 +17,24 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer
-            Grid.Column="0" 
-            >
-        <TextBox
+        <c:CodeBox 
             x:Name="TextEditor"
-            
-            ScrollViewer.CanContentScroll="True" 
+            Grid.Column="0" 
+            DecorationScheme="Xaml"
+            LineNumberMarginWidth="25"
+            Foreground="Transparent" 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Auto"
-            
             />
-        </ScrollViewer>
+
         <GridSplitter
             Grid.Column="1"
             />
 
         <Canvas
             x:Name="VisualEditor"
-            Grid.Column="2"
-            />
+            Grid.Column="2" 
+            >
+        </Canvas>
     </Grid>
 </UserControl>

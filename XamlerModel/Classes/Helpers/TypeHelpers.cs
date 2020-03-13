@@ -63,7 +63,6 @@ namespace WinFormsApp.Classes.Helpers
                 {
                     result.Add(current);
                 }
-
             }
             return result.OrderBy(p => p.Name).ToList();
         }
@@ -83,6 +82,11 @@ namespace WinFormsApp.Classes.Helpers
             return BindableFound(type.BaseType, name);
         }
 
+        public static bool HasParameterlessConstructor(this Type type)
+        {
+            var constructor = type.GetConstructor(Type.EmptyTypes);
+            return constructor != null;
+        }
 
     }
 

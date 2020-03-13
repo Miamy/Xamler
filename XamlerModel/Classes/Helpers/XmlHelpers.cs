@@ -31,7 +31,7 @@ namespace XamlerModel.Classes.Helpers
     }
 
 
-    [ValueConversion(typeof(string), typeof(string))]
+    [ValueConversion(typeof(XmlNode), typeof(string))]
 
     public sealed class MethodToValueConverter : IValueConverter
     {

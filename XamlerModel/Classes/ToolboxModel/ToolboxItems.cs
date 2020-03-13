@@ -39,7 +39,7 @@ namespace XamlerModel.Classes.ToolboxModel
                 return;
             }
             var parent = _assembly.GetType("Xamarin.Forms.BindableObject");
-            Types = _assembly.GetLoadableTypes().Where(t => t.IsPublic && t.IsClass && t.IsSubclassOf(parent)).Select(t => new ToolboxItem(t)).ToList();
+            Types = _assembly.GetLoadableTypes().Where(t => t.IsPublic && t.IsClass && t.IsSubclassOf(parent) && t.Name.IndexOf("`") == -1).Select(t => new ToolboxItem(t)).ToList();
 /*
             var path = @"e:\_Images\_VS\VS2019 Image Library\vswin2019\";
             foreach (var type in Types)
